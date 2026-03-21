@@ -7,20 +7,20 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.nix;
+  cfg = config.programs.lazyvim.nix;
 in
 {
-  options.my.neovim.lazyvim.nix = {
+  options.programs.lazyvim.nix = {
     enable = mkEnableOption "language nix";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPackages = with pkgs; [
         nil
         nixfmt
       ];
-      # my.neovim.lazyvim.extraSpec = ''
+      # programs.lazyvim.extraSpec = ''
       #   { import = "lazyvim.plugins.extras.lang.nix" },
       # '';
       config = [ "lang/nix.lua" ];

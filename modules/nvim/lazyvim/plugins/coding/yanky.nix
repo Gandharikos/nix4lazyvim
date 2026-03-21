@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.yanky;
+  cfg = config.programs.lazyvim.yanky;
 in
 {
-  options.my.neovim.lazyvim.yanky = {
+  options.programs.lazyvim.yanky = {
     enable = mkEnableOption "better yank/paste";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         yanky-nvim
       ];

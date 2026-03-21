@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.python;
+  cfg = config.programs.lazyvim.python;
 in
 {
-  options.my.neovim.lazyvim.python = {
+  options.programs.lazyvim.python = {
     enable = mkEnableOption "language python";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         neotest-python
         nvim-dap-python

@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.go;
+  cfg = config.programs.lazyvim.go;
 in
 {
-  options.my.neovim.lazyvim.go = {
+  options.programs.lazyvim.go = {
     enable = mkEnableOption "language go";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         nvim-dap-go
         neotest-golang

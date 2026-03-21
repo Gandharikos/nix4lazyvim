@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.inc-rename;
+  cfg = config.programs.lazyvim.inc-rename;
 in
 {
-  options.my.neovim.lazyvim.inc-rename = {
+  options.programs.lazyvim.inc-rename = {
     enable = mkEnableOption "Incremental LSP renaming based on Neovim's command-preview feature";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         inc-rename-nvim
       ];

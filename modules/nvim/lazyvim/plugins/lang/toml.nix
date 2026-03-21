@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.toml;
+  cfg = config.programs.lazyvim.toml;
 in
 {
-  options.my.neovim.lazyvim.toml = {
+  options.programs.lazyvim.toml = {
     enable = mkEnableOption "language toml";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       imports = [ "lazyvim.plugins.extras.lang.toml" ];
 
       extraPackages = with pkgs; [

@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.practice;
+  cfg = config.programs.lazyvim.practice;
 in
 {
-  options.my.neovim.lazyvim.practice = {
+  options.programs.lazyvim.practice = {
     enable = mkEnableOption "Practice plugin";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         hardtime-nvim
         precognition-nvim

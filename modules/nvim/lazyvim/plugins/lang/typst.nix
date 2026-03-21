@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.typst;
+  cfg = config.programs.lazyvim.typst;
 in
 {
-  options.my.neovim.lazyvim.typst = {
+  options.programs.lazyvim.typst = {
     enable = mkEnableOption "language typst";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       imports = [ "lazyvim.plugins.extras.lang.typst" ];
 
       extraPlugins = with pkgs.vimPlugins; [

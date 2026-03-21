@@ -6,11 +6,11 @@
 }:
 let
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim;
+  cfg = config.programs.lazyvim;
 in
 {
   config = mkIf (cfg.cmp == "nvim-cmp") {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         nvim-cmp
         cmp-nvim-lsp

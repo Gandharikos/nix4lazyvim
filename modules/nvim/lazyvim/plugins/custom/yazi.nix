@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.yazi;
+  cfg = config.programs.lazyvim.yazi;
 in
 {
-  options.my.neovim.lazyvim.yazi = {
+  options.programs.lazyvim.yazi = {
     enable = mkEnableOption "yazi explorer";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         yazi-nvim
       ];

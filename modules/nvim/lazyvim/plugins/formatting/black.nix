@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.black;
+  cfg = config.programs.lazyvim.black;
 in
 {
-  options.my.neovim.lazyvim.black = {
+  options.programs.lazyvim.black = {
     enable = mkEnableOption "formatting tool - black";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       imports = [ "lazyvim.plugins.extras.formatting.black" ];
 
       extraPackages = with pkgs; [

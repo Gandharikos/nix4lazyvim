@@ -6,14 +6,14 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.eslint;
+  cfg = config.programs.lazyvim.eslint;
 in
 {
-  options.my.neovim.lazyvim.eslint = {
+  options.programs.lazyvim.eslint = {
     enable = mkEnableOption "linting tool - eslint";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim.imports = [ "lazyvim.plugins.extras.linting.eslint" ];
+    programs.lazyvim.imports = [ "lazyvim.plugins.extras.linting.eslint" ];
   };
 }

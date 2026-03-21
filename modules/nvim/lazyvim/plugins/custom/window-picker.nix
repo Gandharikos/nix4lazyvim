@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.window-picker;
+  cfg = config.programs.lazyvim.window-picker;
 in
 {
-  options.my.neovim.lazyvim.window-picker = {
+  options.programs.lazyvim.window-picker = {
     enable = mkEnableOption "window picker";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         nvim-window-picker
       ];

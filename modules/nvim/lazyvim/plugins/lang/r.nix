@@ -7,7 +7,7 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.r;
+  cfg = config.programs.lazyvim.r;
   inherit (lib.meta) getExe;
   R' = getExe pkgs.R;
   r-language-server = pkgs.writeShellScriptBin "r-language-server" ''
@@ -15,12 +15,12 @@ let
   '';
 in
 {
-  options.my.neovim.lazyvim.r = {
+  options.programs.lazyvim.r = {
     enable = mkEnableOption "language r";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         R-nvim
         # cmp-r

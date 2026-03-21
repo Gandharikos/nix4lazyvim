@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.obsidian;
+  cfg = config.programs.lazyvim.obsidian;
 in
 {
-  options.my.neovim.lazyvim.obsidian = {
+  options.programs.lazyvim.obsidian = {
     enable = mkEnableOption "Obsidian plugin for LazyVim";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         obsidian-nvim
       ];

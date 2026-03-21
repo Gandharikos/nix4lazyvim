@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.tex;
+  cfg = config.programs.lazyvim.tex;
 in
 {
-  options.my.neovim.lazyvim.tex = {
+  options.programs.lazyvim.tex = {
     enable = mkEnableOption "language tex";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         vimtex
       ];

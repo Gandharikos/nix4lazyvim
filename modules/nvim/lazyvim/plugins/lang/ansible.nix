@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.ansible;
+  cfg = config.programs.lazyvim.ansible;
 in
 {
-  options.my.neovim.lazyvim.ansible = {
+  options.programs.lazyvim.ansible = {
     enable = mkEnableOption "language ansible";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       imports = [ "lazyvim.plugins.extras.lang.ansible" ];
 
       extraPackages = with pkgs; [

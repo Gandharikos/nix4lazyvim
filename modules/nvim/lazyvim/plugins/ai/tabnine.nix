@@ -7,22 +7,22 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.tabnine;
+  cfg = config.programs.lazyvim.tabnine;
 in
 {
-  options.my.neovim.lazyvim.tabnine = {
+  options.programs.lazyvim.tabnine = {
     enable = mkEnableOption "AI plugin - tabnine";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         cmp-tabnine
       ];
 
       imports = [ "lazyvim.plugins.extras.ai.tabnine" ];
     };
-    # my.neovim.lazyvim.extraPackages = with pkgs; [
+    # programs.lazyvim.extraPackages = with pkgs; [
     #   tabnine
     # ];
   };

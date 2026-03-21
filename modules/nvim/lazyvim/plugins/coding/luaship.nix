@@ -7,21 +7,21 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.luasnip;
+  cfg = config.programs.lazyvim.luasnip;
 in
 {
-  options.my.neovim.lazyvim.luasnip = {
+  options.programs.lazyvim.luasnip = {
     enable = mkEnableOption "Code snippet engine - LuaSnip";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins =
         with pkgs.vimPlugins;
         [
           LuaSnip
         ]
-        ++ lib.optionals (config.my.neovim.lazyvim.cmp == "nvim-cmp") [ cmp_luasnip ];
+        ++ lib.optionals (config.programs.lazyvim.cmp == "nvim-cmp") [ cmp_luasnip ];
 
       excludePlugins = with pkgs.VimPlugins; [
         nvim-snippets

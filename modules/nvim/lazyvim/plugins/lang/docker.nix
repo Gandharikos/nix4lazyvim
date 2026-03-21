@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.docker;
+  cfg = config.programs.lazyvim.docker;
 in
 {
-  options.my.neovim.lazyvim.docker = {
+  options.programs.lazyvim.docker = {
     enable = mkEnableOption "language docker";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       imports = [ "lazyvim.plugins.extras.lang.docker" ];
 
       extraPackages = with pkgs; [

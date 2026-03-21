@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.winshift;
+  cfg = config.programs.lazyvim.winshift;
 in
 {
-  options.my.neovim.lazyvim.winshift = {
+  options.programs.lazyvim.winshift = {
     enable = mkEnableOption "window winshift";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [ winshift-nvim ];
 
       config = [ "ui/winshift.lua" ];

@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.biome;
+  cfg = config.programs.lazyvim.biome;
 in
 {
-  options.my.neovim.lazyvim.biome = {
+  options.programs.lazyvim.biome = {
     enable = mkEnableOption "formatting tool - biome";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       imports = [ "lazyvim.plugins.extras.formatting.biome" ];
 
       extraPackages = with pkgs; [

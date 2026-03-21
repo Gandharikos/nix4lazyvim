@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.mini-hipatterns;
+  cfg = config.programs.lazyvim.mini-hipatterns;
 in
 {
-  options.my.neovim.lazyvim.mini-hipatterns = {
+  options.programs.lazyvim.mini-hipatterns = {
     enable = mkEnableOption "Highlight colors in your code";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         {
           name = "mini.hipatterns";

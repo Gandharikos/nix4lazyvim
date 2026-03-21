@@ -7,18 +7,18 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.gx;
+  cfg = config.programs.lazyvim.gx;
 in
 {
-  options.my.neovim.lazyvim.gx = {
+  options.programs.lazyvim.gx = {
     enable = mkEnableOption "gx browse";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim.extraPlugins = with pkgs.vimPlugins; [
+    programs.lazyvim.extraPlugins = with pkgs.vimPlugins; [
       gx-nvim
     ];
 
-    my.neovim.lazyvim.config = [ "misc/gx.lua" ];
+    programs.lazyvim.config = [ "misc/gx.lua" ];
   };
 }

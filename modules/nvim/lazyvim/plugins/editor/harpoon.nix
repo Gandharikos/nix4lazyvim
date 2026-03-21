@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.harpoon;
+  cfg = config.programs.lazyvim.harpoon;
 in
 {
-  options.my.neovim.lazyvim.harpoon = {
+  options.programs.lazyvim.harpoon = {
     enable = mkEnableOption "harpoon2";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         harpoon
       ];

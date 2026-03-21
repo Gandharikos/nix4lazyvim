@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.zig;
+  cfg = config.programs.lazyvim.zig;
 in
 {
-  options.my.neovim.lazyvim.zig = {
+  options.programs.lazyvim.zig = {
     enable = mkEnableOption "language zig";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         neotest-zig
       ];

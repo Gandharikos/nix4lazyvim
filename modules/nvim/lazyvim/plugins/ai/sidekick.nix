@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.sidekick;
+  cfg = config.programs.lazyvim.sidekick;
 in
 {
-  options.my.neovim.lazyvim.sidekick = {
+  options.programs.lazyvim.sidekick = {
     enable = mkEnableOption "AI plugin - sidekick";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         sidekick-nvim
       ];

@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.rest;
+  cfg = config.programs.lazyvim.rest;
 in
 {
-  options.my.neovim.lazyvim.rest = {
+  options.programs.lazyvim.rest = {
     enable = mkEnableOption "rest tool";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         kulala-nvim
       ];

@@ -20,7 +20,7 @@ let
   inherit (lib.lists) foldl';
   inherit (nix4lazyvimLib) sourceLua;
   extraLuaConfigs = foldl' (acc: path: acc // sourceLua path) { } cfg.config;
-  cfg = config.my.neovim.lazyvim;
+  cfg = config.programs.lazyvim;
   pluginsOptionType = listOf (oneOf [
     package
     (submodule {
@@ -34,10 +34,8 @@ in
 {
   imports = nix4lazyvimLib.scanPaths ./.;
 
-  options.my.neovim.lazyvim = {
-    enable = mkEnableOption "LazyVim" // {
-      default = config.my.neovim.enable;
-    };
+  options.programs.lazyvim = {
+    enable = mkEnableOption "LazyVim";
 
     plugins =
       # let
@@ -251,7 +249,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       finalExtraSpec =
         let
           importsSpec = lib.concatMapStrings (import: ''
@@ -280,6 +278,13 @@ in
     programs.neovim = {
       enable = true;
       inherit (cfg) extraPackages;
+
+      withNodeJs = false;
+      withRuby = false;
+
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
 
       plugins = with pkgs.vimPlugins; [ lazy-nvim ];
 
@@ -392,7 +397,7 @@ in
               ${cfg.finalExtraSpec}
               { import = "plugins" },
               -- The following configs are needed for fixing lazyvim on nix
-              -- disable mason.nvim, use my.neovim.lazyvim.extraPackages
+              -- disable mason.nvim, use programs.lazyvim.extraPackages
               { "mason-org/mason-lspconfig.nvim", enabled = false },
               { "mason-org/mason.nvim", enabled = false },
               -- import/override with your plugins

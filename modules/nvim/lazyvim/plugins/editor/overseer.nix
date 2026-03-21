@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.overseer;
+  cfg = config.programs.lazyvim.overseer;
 in
 {
-  options.my.neovim.lazyvim.overseer = {
+  options.programs.lazyvim.overseer = {
     enable = mkEnableOption "overseer";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         overseer-nvim
       ];

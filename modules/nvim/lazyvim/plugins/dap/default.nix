@@ -7,15 +7,15 @@
 let
   inherit (lib.options) mkEnableOption;
   inherit (lib.modules) mkIf;
-  cfg = config.my.neovim.lazyvim.dap;
+  cfg = config.programs.lazyvim.dap;
 in
 {
-  options.my.neovim.lazyvim.dap = {
+  options.programs.lazyvim.dap = {
     enable = mkEnableOption "Debugging support";
   };
 
   config = mkIf cfg.enable {
-    my.neovim.lazyvim = {
+    programs.lazyvim = {
       extraPlugins = with pkgs.vimPlugins; [
         nvim-dap
         nvim-dap-ui
