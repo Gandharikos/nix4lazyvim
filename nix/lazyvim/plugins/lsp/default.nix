@@ -1,2 +1,6 @@
-{ nix4lazyvimLib, ... }:
-{ imports = nix4lazyvimLib.scanPaths ./.; }
+{
+  imports = [
+    ./neoconf.nix
+    ./none-ls.nix
+  ];
+}

@@ -1,4 +1,16 @@
-{ lib, nix4lazyvimLib, ... }:
 {
-  imports = nix4lazyvimLib.scanPaths ./.;
+  imports = [
+    ./ai
+    ./coding
+    ./dap
+    ./editor
+    ./formatting
+    ./lang
+    ./linting
+    ./lsp
+    ./test
+    ./ui
+    ./util
+    ./vscode.nix
+  ];
 }

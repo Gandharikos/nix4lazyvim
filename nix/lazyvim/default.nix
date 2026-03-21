@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  nix4lazyvimLib,
   ...
 }:
 let
@@ -39,7 +38,7 @@ let
   );
 in
 {
-  imports = nix4lazyvimLib.scanPaths ./.;
+  imports = [ ./plugins ];
 
   options.programs.lazyvim = {
     enable = mkEnableOption "LazyVim";

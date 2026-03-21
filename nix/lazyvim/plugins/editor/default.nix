@@ -1,4 +1,22 @@
-{ lib, nix4lazyvimLib, ... }:
 {
-  imports = nix4lazyvimLib.scanPaths ./.;
+  imports = [
+    ./aerial.nix
+    ./dial.nix
+    ./fzf.nix
+    ./harpoon2.nix
+    ./illuminate.nix
+    ./inc-rename.nix
+    ./leap.nix
+    ./mini-diff.nix
+    ./mini-files.nix
+    ./mini-move.nix
+    ./navic.nix
+    ./neo-tree.nix
+    ./outline.nix
+    ./overseer.nix
+    ./refactoring.nix
+    ./snacks-explorer.nix
+    ./snacks-picker.nix
+    ./telescope.nix
+  ];
 }

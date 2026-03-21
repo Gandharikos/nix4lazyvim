@@ -1,4 +1,6 @@
-{ lib, nix4lazyvimLib, ... }:
 {
-  imports = nix4lazyvimLib.scanPaths ./.;
+  imports = [
+    ./black.nix
+    ./prettier.nix
+  ];
 }
