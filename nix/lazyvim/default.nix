@@ -17,6 +17,7 @@ let
     str
     submodule
     ;
+  inherit (lib.options) literalExpression;
   cfg = config.programs.lazyvim;
   pluginsOptionType = listOf (oneOf [
     package
@@ -42,6 +43,23 @@ in
 
   options.programs.lazyvim = {
     enable = mkEnableOption "LazyVim";
+
+    neovim = mkOption {
+      type = package;
+      default = pkgs.neovim;
+      defaultText = literalExpression "pkgs.neovim";
+      description = "The Neovim package to use. Override to use neovim-nightly or a custom build.";
+    };
+
+    lazy-lock = mkOption {
+      type = str;
+      default = "";
+      description = ''
+        Contents of lazy-lock.json as a string. When non-empty, written to
+        the Neovim config directory to pin plugin versions.
+        Leave blank if you do not need version pinning.
+      '';
+    };
 
     plugins = mkOption {
       type = pluginsOptionType;
@@ -276,8 +294,13 @@ in
       ];
     };
 
+    xdg.configFile = lib.mkIf (cfg.lazy-lock != "") {
+      "nvim/lazy-lock.json".text = cfg.lazy-lock;
+    };
+
     programs.neovim = {
       enable = true;
+      package = cfg.neovim;
       inherit (cfg) extraPackages;
 
       withNodeJs = false;

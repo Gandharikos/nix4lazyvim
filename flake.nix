@@ -3,24 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
-    {
-      self,
-      neovim-nightly-overlay,
-      ...
-    }:
+    { self, nixpkgs, ... }:
     let
       # nix4lazyvimLib is passed to all modules via _module.args.
       # Using a dedicated namespace avoids conflicts with the host's lib.my.
@@ -42,9 +28,6 @@
       };
     in
     {
-      # Re-export neovim-nightly overlay so consumers can apply it to nixpkgs
-      overlays.neovim-nightly = neovim-nightly-overlay.overlays.default;
-
       # Home-manager module — import this in your home-manager configuration
       homeManagerModules.default =
         { lib, ... }:
