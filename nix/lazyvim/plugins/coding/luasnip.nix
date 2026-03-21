@@ -1,0 +1,33 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  inherit (lib.options) mkEnableOption;
+  inherit (lib.modules) mkIf;
+  cfg = config.programs.lazyvim.coding.luasnip;
+in
+{
+  options.programs.lazyvim.coding.luasnip = {
+    enable = mkEnableOption "Code snippet engine - LuaSnip";
+  };
+
+  config = mkIf cfg.enable {
+    programs.lazyvim = {
+      extraPlugins =
+        with pkgs.vimPlugins;
+        [
+          LuaSnip
+        ]
+        ++ lib.optionals (config.programs.lazyvim.cmp == "nvim-cmp") [ cmp_luasnip ];
+
+      excludePlugins = with pkgs.VimPlugins; [
+        nvim-snippets
+      ];
+
+      imports = [ "lazyvim.plugins.extras.coding.luasnip" ];
+    };
+  };
+}

@@ -22,8 +22,6 @@
       ...
     }:
     let
-      configRoot = self + "/config/.";
-
       # nix4lazyvimLib is passed to all modules via _module.args.
       # Using a dedicated namespace avoids conflicts with the host's lib.my.
       nix4lazyvimLib = lib: {
@@ -41,16 +39,6 @@
               ) (builtins.readDir path)
             )
           );
-
-        sourceLua =
-          path:
-          let
-            name = builtins.baseNameOf path;
-            key = "nvim/lua/plugins/${name}";
-          in
-          {
-            "${key}".source = lib.path.append configRoot "nvim/lua/plugins/extras/${path}";
-          };
       };
     in
     {
@@ -61,7 +49,7 @@
       homeManagerModules.default =
         { lib, ... }:
         {
-          imports = [ ./modules/nvim ];
+          imports = [ ./nix ];
           # Provide utilities under a dedicated namespace to avoid conflicts
           # with the host's lib.my (e.g. when used inside a dotfiles repo)
           _module.args.nix4lazyvimLib = nix4lazyvimLib lib;
