@@ -2,7 +2,7 @@
 
 Nix flake providing a home-manager module for declarative LazyVim configuration.
 
-Inspired by @azuwis's Nix setup and [pfassina/lazyvim-nix](https://github.com/pfassina/lazyvim-nix/blob/main/README.md).
+Inspired by @[azuwis](https://github.com/azuwis)'s Nix setup and [lazyvim-nix](https://github.com/pfassina/lazyvim-nix/blob/main/README.md).
 
 ## Features
 
@@ -81,6 +81,7 @@ LazyVim extras are organized by category:
 - **util/** - Utilities (gitui, chezmoi, etc.)
 
 Enable any extra with:
+
 ```nix
 programs.lazyvim.extras.<category>.<name>.enable = true;
 ```
@@ -218,7 +219,7 @@ nix4lazyvim/
 1. **Plugin Management**: Instead of Mason, all vim plugins come from `nixpkgs.vimPlugins`
 2. **Lazy.nvim Integration**: Uses `dev.path` to point lazy.nvim to Nix store
 3. **System Tools**: LSPs, formatters, etc. are in `extraPackages` (added to PATH)
-4. **Data-driven Extras**: 
+4. **Data-driven Extras**:
    - `source/extras.json` lists supported LazyVim extras plus plugin add/remove metadata
    - `nix/lib/data-loading.nix` loads the JSON and provides helper functions
    - Main module dynamically creates options for all extras
