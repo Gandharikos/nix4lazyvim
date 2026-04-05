@@ -102,25 +102,10 @@ let
         entries
     ).values;
 
-  getConditionalPluginEntries =
-    fieldName: cmp: extra:
-    let
-      conditionalField = "${fieldName}ByCmp";
-      byCmp = extra.${conditionalField} or { };
-    in
-    if cmp != null then
-      byCmp.${cmp} or [ ]
-    else
-      [ ];
-
   getPluginEntriesForExtras =
-    fieldName: { extras, cmp ? null }:
+    fieldName: extras:
     uniquePluginEntries (
-      lib.flatten (
-        map
-          (extra: (extra.${fieldName} or [ ]) ++ getConditionalPluginEntries fieldName cmp extra)
-          extras
-      )
+      lib.flatten (map (extra: extra.${fieldName} or [ ]) extras)
     );
 
   parseExtraRef =
@@ -265,10 +250,10 @@ rec {
     mergeResolvedExtras expandedExtras;
 
   getExtraPluginPackages =
-    args: builtins.map convertPluginEntry (getPluginEntriesForExtras "extraPlugins" args);
+    extras: builtins.map convertPluginEntry (getPluginEntriesForExtras "extraPlugins" extras);
 
   getExcludedPluginPackages =
-    args: builtins.map convertPluginEntry (getPluginEntriesForExtras "excludePlugins" args);
+    extras: builtins.map convertPluginEntry (getPluginEntriesForExtras "excludePlugins" extras);
 
   # Resolve packages from source/dependencies.json for enabled extras that opt in.
   # Unmapped tools or nixpkg paths missing from nixpkgs are skipped.

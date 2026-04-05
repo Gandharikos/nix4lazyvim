@@ -23,6 +23,8 @@ let
     { name = "catppuccin"; path = catppuccin-nvim; }
     grug-far-nvim
     flash-nvim
+    blink-cmp
+    friendly-snippets
     which-key-nvim
     gitsigns-nvim
     trouble-nvim
@@ -54,9 +56,6 @@ let
   initLua = pkgs.writeText "lazyvim-init.lua" ''
     local lazypath = ${builtins.toJSON (toString pkgs.vimPlugins.lazy-nvim)}
     vim.opt.rtp:prepend(lazypath)
-    vim.g.lazyvim_cmp = "auto"
-    vim.g.lazyvim_picker = "auto"
-    vim.g.lazyvim_explorer = "auto"
     vim.g.lazyvim_check_order = false
     require("lazy").setup({
       change_detection = { notify = false },

@@ -8,7 +8,6 @@ let
   inherit (lib.options) mkEnableOption mkOption literalExpression;
   inherit (lib.types)
     attrsOf
-    enum
     listOf
     oneOf
     package
@@ -35,29 +34,10 @@ let
 
   # Collect enabled extras using data-driven approach
   enabledExtras = dataLib.getEnabledExtras cfg.extras;
-  selectorPluginExtras =
-    (lib.optional (cfg.cmp == "nvim-cmp") (dataLib.requireExtraMetadata "coding" "nvim-cmp"))
-    ++ (lib.optional (cfg.cmp == "blink.cmp" || cfg.cmp == "auto") (
-      dataLib.requireExtraMetadata "coding" "blink"
-    ))
-    ++ (lib.optional (cfg.picker == "telescope") (dataLib.requireExtraMetadata "editor" "telescope"))
-    ++ (lib.optional (cfg.picker == "fzf") (dataLib.requireExtraMetadata "editor" "fzf"))
-    ++ (lib.optional (cfg.picker == "snacks") (dataLib.requireExtraMetadata "editor" "snacks_picker"))
-    ++ (lib.optional (cfg.explorer == "neo-tree") (dataLib.requireExtraMetadata "editor" "neo-tree"))
-    ++ (lib.optional (cfg.explorer == "snacks") (
-      dataLib.requireExtraMetadata "editor" "snacks_explorer"
-    ));
-  metadataPluginExtras = enabledExtras ++ selectorPluginExtras;
   coreDependencyPackages = dataLib.getCoreDependencyPackages;
   autoDependencyPackages = dataLib.getExtraDependencyPackages enabledExtras;
-  extraPluginPackages = dataLib.getExtraPluginPackages {
-    extras = metadataPluginExtras;
-    inherit (cfg) cmp;
-  };
-  excludedPluginPackages = dataLib.getExcludedPluginPackages {
-    extras = metadataPluginExtras;
-    inherit (cfg) cmp;
-  };
+  extraPluginPackages = dataLib.getExtraPluginPackages enabledExtras;
+  excludedPluginPackages = dataLib.getExcludedPluginPackages enabledExtras;
 
 in
 {
@@ -154,46 +134,6 @@ in
         Core or metadata-provided vim plugins to omit from the lazy.nvim dev path.
 
         This is mainly useful when you want to replace a default engine with a different one.
-      '';
-    };
-
-    cmp = mkOption {
-      type = enum [
-        "nvim-cmp"
-        "blink.cmp"
-        "auto"
-      ];
-      default = "auto";
-      description = ''
-        Choose the completion engine.
-        If you choose "auto", it will use the LazyVim default completion engine.
-      '';
-    };
-
-    picker = mkOption {
-      type = enum [
-        "telescope"
-        "fzf"
-        "snacks"
-        "auto"
-      ];
-      default = "auto";
-      description = ''
-        Choose the picker engine.
-        If you choose "auto", it will use the LazyVim default picker engine.
-      '';
-    };
-
-    explorer = mkOption {
-      type = enum [
-        "neo-tree"
-        "snacks"
-        "auto"
-      ];
-      default = "auto";
-      description = ''
-        Choose the file explorer.
-        If you choose "auto", it will use the LazyVim default file explorer.
       '';
     };
 
@@ -300,9 +240,6 @@ in
       generatedInitLua = ''
         local lazypath = ${builtins.toJSON (toString pkgs.vimPlugins.lazy-nvim)}
         vim.opt.rtp:prepend(lazypath)
-        vim.g.lazyvim_cmp = "${cfg.cmp}"
-        vim.g.lazyvim_picker = "${cfg.picker}"
-        vim.g.lazyvim_explorer = "${cfg.explorer}"
         vim.g.lazyvim_check_order = false
 
         require("lazy").setup({

@@ -41,10 +41,9 @@ Inspired by @[azuwis](https://github.com/azuwis)'s Nix setup and [lazyvim-nix](h
             appName = "lazyvim";     # Optional: use ~/.config/lazyvim/
             # Also creates a shell alias: lazyvim='NVIM_APPNAME=lazyvim nvim'
 
-            # Choose your tools
-            cmp = "blink.cmp";      # or "nvim-cmp" or "auto"
-            picker = "telescope";    # or "fzf" or "snacks" or "auto"
-            explorer = "neo-tree";   # or "snacks" or "auto"
+            # Enable editor extras explicitly
+            extras.editor.telescope.enable = true;
+            extras.editor.neo-tree.enable = true;
           };
         }
       ];
@@ -105,10 +104,6 @@ programs.lazyvim = {
   installDependencies = true;       # Default dependency policy for enabled extras
   extraPackages = [ ... ];          # Add system tools
 
-  cmp = "auto";                     # Completion: "nvim-cmp" | "blink.cmp" | "auto"
-  picker = "auto";                  # Picker: "telescope" | "fzf" | "snacks" | "auto"
-  explorer = "auto";                # Explorer: "neo-tree" | "snacks" | "auto"
-
   extras = {
     # Enable any LazyVim extra - all 300+ extras are auto-discovered
     lang.rust.enable = true;
@@ -116,6 +111,8 @@ programs.lazyvim = {
     lang.go.enable = true;
     ai.copilot.enable = true;
     editor.dial.enable = true;
+    editor.telescope.enable = true;
+    editor.neo-tree.enable = true;
     lang.php.installDependencies = false;  # Per-extra override
     # No need to write Nix modules - extras are data-driven!
   };
@@ -170,6 +167,7 @@ Just enable them in your config:
 
 ```nix
 programs.lazyvim.extras.lang.python.enable = true;
+programs.lazyvim.extras.coding.nvim-cmp.enable = true; # Optional: switch away from the default blink backend
 ```
 
 Enabled extras install mapped dependencies by default. To opt one out:

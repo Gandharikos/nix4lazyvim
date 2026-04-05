@@ -7,11 +7,6 @@
   programs.lazyvim = {
     enable = true;
 
-    # Choose your tools (optional - defaults to "auto")
-    cmp = "blink.cmp";      # Completion: "nvim-cmp" | "blink.cmp" | "auto"
-    picker = "telescope";    # Picker: "telescope" | "fzf" | "snacks" | "auto"
-    explorer = "neo-tree";   # Explorer: "neo-tree" | "snacks" | "auto"
-
     # Enable LazyVim extras (all 109+ extras available!)
     extras = {
       # Language support
@@ -26,6 +21,8 @@
       # Editor enhancements
       editor.dial.enable = true;
       editor.illuminate.enable = true;
+      editor.telescope.enable = true;
+      editor.neo-tree.enable = true;
 
       # UI improvements
       ui.edgy.enable = true;

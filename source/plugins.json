@@ -53,6 +53,16 @@
       "description": "Navigate with search labels"
     },
     {
+      "name": "blink.cmp",
+      "nixpkg": "blink-cmp",
+      "description": "Default completion engine"
+    },
+    {
+      "name": "friendly-snippets",
+      "nixpkg": "friendly-snippets",
+      "description": "Default snippet collection"
+    },
+    {
       "name": "which-key.nvim",
       "nixpkg": "which-key-nvim",
       "description": "Display keybindings"

@@ -11,16 +11,13 @@
     # The directory should contain a lua/ subdirectory
     configDir = ./custom-config;
 
-    # Choose your tools
-    cmp = "blink.cmp";
-    picker = "telescope";
-    explorer = "neo-tree";
-
     # Enable LazyVim extras
     extras = {
       lang.nix.enable = true;
       lang.python.enable = true;
       lang.rust.enable = true;
+      editor.telescope.enable = true;
+      editor.neo-tree.enable = true;
       ai.copilot.enable = true;
     };
 

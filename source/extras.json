@@ -33,19 +33,10 @@
       "import": "lazyvim.plugins.extras.ai.copilot",
       "name": "copilot",
       "extraPlugins": [
-        "copilot-lua"
-      ],
-      "extraPluginsByCmp": {
-        "nvim-cmp": [
-          "copilot-cmp"
-        ],
-        "blink.cmp": [
-          "blink-cmp-copilot"
-        ],
-        "auto": [
-          "blink-cmp-copilot"
-        ]
-      }
+        "copilot-lua",
+        "copilot-cmp",
+        "blink-cmp-copilot"
+      ]
     },
     "sidekick": {
       "category": "ai",
@@ -91,13 +82,9 @@
       "import": "lazyvim.plugins.extras.coding.luasnip",
       "name": "luasnip",
       "extraPlugins": [
-        "luasnip"
+        "luasnip",
+        "cmp_luasnip"
       ],
-      "extraPluginsByCmp": {
-        "nvim-cmp": [
-          "cmp_luasnip"
-        ]
-      },
       "excludePlugins": [
         "nvim-snippets"
       ]
@@ -393,13 +380,9 @@
       "extraPlugins": [
         "nvim-treesitter-sexp",
         "baleia-nvim",
-        "conjure"
-      ],
-      "extraPluginsByCmp": {
-        "nvim-cmp": [
-          "cmp-conjure"
-        ]
-      }
+        "conjure",
+        "cmp-conjure"
+      ]
     },
     "cmake": {
       "category": "lang",

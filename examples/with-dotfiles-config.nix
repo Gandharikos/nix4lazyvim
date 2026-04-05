@@ -14,13 +14,11 @@ in
     enable = true;
     configDir = dotfilesConfig;
 
-    cmp = "blink.cmp";
-    picker = "telescope";
-    explorer = "neo-tree";
-
     extras = {
       lang.nix.enable = true;
       lang.lua.enable = true;
+      editor.telescope.enable = true;
+      editor.neo-tree.enable = true;
     };
 
     extraPackages = with pkgs; [

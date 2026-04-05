@@ -69,9 +69,6 @@ The home-manager module (`nix/module.nix`) is **data-driven** and exposes:
 - **`programs.lazyvim.extraPackages`** — System tools/LSPs to include in PATH
 - **`programs.lazyvim.extras.{category}.{name}.enable`** — Enable LazyVim extras (auto-discovered from JSON)
 - **`programs.lazyvim.extras.{category}.{name}.installDependencies`** — Per-extra override for mapped tools and runtime dependencies
-- **`programs.lazyvim.cmp`** — Completion engine (nvim-cmp/blink.cmp/auto)
-- **`programs.lazyvim.picker`** — Picker (telescope/fzf/snacks/auto)
-- **`programs.lazyvim.explorer`** — File explorer (neo-tree/snacks/auto)
 
 ### Data-Driven Architecture
 
