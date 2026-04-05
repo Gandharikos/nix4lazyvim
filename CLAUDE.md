@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The flake provides two main outputs:
 
-1. **`homeManagerModules.default`** — Import into home-manager configurations
+1. **`homeModules.default`** — Import into home-manager configurations
    - Entry point: `nix/default.nix` → `nix/module.nix`
    - Configurable via `programs.lazyvim.*` options
 
@@ -61,17 +61,17 @@ The home-manager module (`nix/module.nix`) is **data-driven** and exposes:
 **User-facing options:**
 - **`programs.lazyvim.enable`** — Enable LazyVim
 - **`programs.lazyvim.neovim`** — Override Neovim package (for nightly, etc.)
-- **`programs.lazyvim.configDir`** — Path to custom lua/ config directory (symlinked to ~/.config/nvim/lua/)
+- **`programs.lazyvim.appName`** — Config directory name / `NVIM_APPNAME` value (default: `nvim`)
+- **`programs.lazyvim.configDir`** — Path to custom lua/ config directory (symlinked under `~/.config/<appName>/`)
 - **`programs.lazyvim.extraPlugins`** — Add plugins beyond LazyVim core (core plugins auto-loaded from source/plugins.json)
+- **`programs.lazyvim.excludePlugins`** — Remove core or metadata-provided plugins from the generated dev.path
+- **`programs.lazyvim.installDependencies`** — Default dependency-install policy for enabled extras (default: `true`)
 - **`programs.lazyvim.extraPackages`** — System tools/LSPs to include in PATH
 - **`programs.lazyvim.extras.{category}.{name}.enable`** — Enable LazyVim extras (auto-discovered from JSON)
-- **`programs.lazyvim.extras.{category}.{name}.installDependencies`** — Auto-install mapped tools and runtime dependencies
+- **`programs.lazyvim.extras.{category}.{name}.installDependencies`** — Per-extra override for mapped tools and runtime dependencies
 - **`programs.lazyvim.cmp`** — Completion engine (nvim-cmp/blink.cmp/auto)
 - **`programs.lazyvim.picker`** — Picker (telescope/fzf/snacks/auto)
 - **`programs.lazyvim.explorer`** — File explorer (neo-tree/snacks/auto)
-
-**Internal options (auto-generated):**
-- **`programs.lazyvim.finalExtraSpec`** — Read-only, generated Lua spec from enabled extras
 
 ### Data-Driven Architecture
 
@@ -118,17 +118,17 @@ All 109+ LazyVim extras are auto-discovered:
 ```
 
 **How it works:**
-1. `source/extras.json` records the supported extras metadata
+1. `source/extras.json` records the supported extras metadata, including plugin additions/removals
 2. `nix/lib/data-loading.nix` loads and parses the JSON
 3. Main module dynamically generates options for all extras
-4. Enabling an extra adds its import path to lazy.nvim spec
+4. Enabling an extra adds its import path to lazy.nvim spec and any mapped plugins to `dev.path`
 
 **Result:** All extras and core plugins work automatically, zero manual modules!
 
 ### Key Files
 
 **Core:**
-- **`flake.nix`** — Flake definition with two outputs (homeModules + packages)
+- **`flake.nix`** — Flake definition with module, package, and app outputs
 - **`nix/default.nix`** — Entry point for home-manager module
 - **`nix/module.nix`** — Main module with data-driven options and logic
 - **`nix/lib/data-loading.nix`** — JSON data loading and helper functions
@@ -145,17 +145,16 @@ All 109+ LazyVim extras are auto-discovered:
 #### 1. Core Plugins Loading
 
 ```nix
-# source/plugins.json → getCorePlugins → allPlugins
-allPlugins = dataLib.getCorePlugins ++ cfg.extraPlugins;
-
-lazyvimPlugins = pkgs.linkFarm "lazy-plugins" (
-  builtins.map mkEntryFromDrv allPlugins
-);
+# source/plugins.json + source/extras.json → allPlugins
+allPlugins =
+  lib.subtractLists (excludedPluginPackages ++ cfg.excludePlugins) dataLib.getCorePlugins
+  ++ extraPluginPackages
+  ++ cfg.extraPlugins;
 ```
 
 **Flow:**
 ```
-source/plugins.json → dataLib.getCorePlugins → Nix packages → linkFarm → lazy.nvim dev.path
+source/plugins.json + source/extras.json → data-loading.nix → Nix packages → linkFarm → lazy.nvim dev.path
 ```
 
 #### 2. LazyVim Extras Loading
@@ -176,7 +175,7 @@ enabledExtras = dataLib.getEnabledExtras cfg.extras;
 # Result: [{ name = "rust"; category = "lang"; import = "lazyvim.plugins.extras.lang.rust"; } ...]
 
 # 2. Generate Lua spec
-programs.lazyvim.finalExtraSpec = lib.concatMapStrings
+extraImportSpec = lib.concatMapStrings
   (extra: ''{ import = "${extra.import}" },
   '')
   enabledExtras;
@@ -185,14 +184,14 @@ programs.lazyvim.finalExtraSpec = lib.concatMapStrings
 
 **Flow:**
 ```
-extras config → getEnabledExtras → finalExtraSpec → initLua → lazy.nvim
+extras config → getEnabledExtras → extraImportSpec → initLua → lazy.nvim
 ```
 
 #### 3. initLua Integration
 
 The generated `initLua`:
 - Points `dev.path` to `lazyvimPlugins` (Nix store symlinks)
-- Inserts `finalExtraSpec` into lazy.nvim spec
+- Inserts generated extra imports into lazy.nvim spec
 - Disables Mason (all plugins/tools from Nix)
 - Empties treesitter `ensure_installed` (grammars from Nix)
 
@@ -201,7 +200,7 @@ The generated `initLua`:
 User config
     ↓
 source/plugins.json → Core plugins
-source/extras.json  → Enabled extras
+source/extras.json  → Extra imports + plugin mappings
     ↓
 Data loading (nix/lib/data-loading.nix)
     ↓
@@ -216,14 +215,15 @@ LazyVim running with Nix-managed plugins
 
 ### Metadata Files
 
-**`source/extras.json`** - Complete metadata for all LazyVim extras (300+)
+**`source/extras.json`** - Complete metadata for all LazyVim extras, including plugin mappings (300+)
 ```json
 {
   "lang": {
     "python": {
       "category": "lang",
       "name": "python",
-      "import": "lazyvim.plugins.extras.lang.python"
+      "import": "lazyvim.plugins.extras.lang.python",
+      "extraPlugins": ["venv-selector-nvim"]
     }
   }
 }
@@ -266,6 +266,7 @@ DO NOT INCLUDE in `configDir`:
 programs.lazyvim = {
   enable = true;
   configDir = ./my-config;  # Points to config directory
+  appName = "lazyvim";      # Uses ~/.config/lazyvim/
   
   # Module handles plugins and extras
   extras.lang.rust.enable = true;
@@ -276,7 +277,7 @@ programs.lazyvim = {
 ### How It Works
 
 1. **Module generates init.lua** - Sets up lazy.nvim with Nix-managed plugins
-2. **All configDir files are symlinked** - To `~/.config/nvim/` (except excluded files)
+2. **All configDir files are symlinked** - To `~/.config/<appName>/` (except excluded files)
 3. **Excluded files**:
    - `init.lua` - Generated by module
    - `lazyvim.json` - Generated by LazyVim at runtime and excluded here
@@ -348,7 +349,7 @@ https://search.nixos.org/packages?channel=unstable&query=vimPlugins
 This module disables Mason because all plugins/tools are managed by Nix. If a LazyVim extra expects Mason, ensure the equivalent packages are in `extraPackages`.
 
 ### Plugin version mismatches
-If you need a lockfile, keep `lazy-lock.json` directly in your `configDir` so Nix symlinks it into `~/.config/nvim/`:
+If you need a lockfile, keep `lazy-lock.json` directly in your `configDir` so Nix symlinks it into `~/.config/<appName>/`:
 ```nix
 programs.lazyvim.configDir = ./my-config;
 ```

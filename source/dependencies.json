@@ -103,7 +103,7 @@
     "formatting.prettier": [
       {
         "name": "prettier",
-        "nixpkg": "nodePackages.prettier",
+        "nixpkg": "prettier",
         "runtime_dependencies": [
           {
             "name": "nodejs",
@@ -128,6 +128,12 @@
             "name": "pip"
           }
         ]
+      }
+    ],
+    "lang.angular": [
+      {
+        "name": "angular-language-server",
+        "nixpkg": "angular-language-server"
       }
     ],
     "lang.clangd": [
@@ -186,6 +192,7 @@
       },
       {
         "name": "csharpier",
+        "nixpkg": "csharpier",
         "runtime_dependencies": [
           {
             "name": "dotnet-sdk",
@@ -194,7 +201,8 @@
         ]
       },
       {
-        "name": "netcoredbg"
+        "name": "netcoredbg",
+        "nixpkg": "netcoredbg"
       },
       {
         "name": "fantomas",
@@ -329,7 +337,7 @@
     "lang.markdown": [
       {
         "name": "markdownlint-cli2",
-        "nixpkg": "nodePackages.markdownlint-cli2",
+        "nixpkg": "markdownlint-cli2",
         "runtime_dependencies": [
           {
             "name": "nodejs",
@@ -354,9 +362,28 @@
         ]
       }
     ],
+    "lang.nix": [
+      {
+        "name": "nil",
+        "nixpkg": "nil"
+      },
+      {
+        "name": "nixfmt",
+        "nixpkg": "nixfmt"
+      }
+    ],
     "lang.php": [
       {
-        "name": "phpcs"
+        "name": "phpactor",
+        "nixpkg": "phpactor"
+      },
+      {
+        "name": "intelephense",
+        "nixpkg": "intelephense"
+      },
+      {
+        "name": "phpcs",
+        "nixpkg": "php84Packages.php-codesniffer"
       },
       {
         "name": "php-cs-fixer"
@@ -510,6 +537,14 @@
     ],
     "lang.typescript": [
       {
+        "name": "typescript-language-server",
+        "nixpkg": "typescript-language-server"
+      },
+      {
+        "name": "vtsls",
+        "nixpkg": "vtsls"
+      },
+      {
         "name": "js-debug-adapter"
       }
     ],
@@ -517,6 +552,16 @@
       {
         "name": "tinymist",
         "nixpkg": "tinymist"
+      }
+    ],
+    "lang.vue": [
+      {
+        "name": "volar",
+        "nixpkg": "vscode-extensions.vue.volar"
+      },
+      {
+        "name": "vtsls",
+        "nixpkg": "vtsls"
       }
     ],
     "lang.zig": [
@@ -527,7 +572,7 @@
     "linting.eslint": [
       {
         "name": "eslint",
-        "nixpkg": "nodePackages.eslint"
+        "nixpkg": "eslint"
       }
     ],
     "util.dot": [

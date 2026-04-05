@@ -65,10 +65,11 @@ User enables extra → JSON lookup → LazyVim imports extra
 ### Dependency Installation
 
 ```nix
-programs.lazyvim.extras.lang.python = {
-  enable = true;
-  installDependencies = true;  # Auto-installs mapped packages such as ruff
-};
+programs.lazyvim.installDependencies = true;
+programs.lazyvim.extras.lang.python.enable = true;
+
+# Optional per-extra override
+programs.lazyvim.extras.lang.python.installDependencies = false;
 ```
 
 ### Benefits

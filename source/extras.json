@@ -18,7 +18,10 @@
     "copilot-chat": {
       "category": "ai",
       "import": "lazyvim.plugins.extras.ai.copilot-chat",
-      "name": "copilot-chat"
+      "name": "copilot-chat",
+      "extraPlugins": [
+        "CopilotChat-nvim"
+      ]
     },
     "copilot-native": {
       "category": "ai",
@@ -28,71 +31,165 @@
     "copilot": {
       "category": "ai",
       "import": "lazyvim.plugins.extras.ai.copilot",
-      "name": "copilot"
+      "name": "copilot",
+      "extraPlugins": [
+        "copilot-lua"
+      ],
+      "extraPluginsByCmp": {
+        "nvim-cmp": [
+          "copilot-cmp"
+        ],
+        "blink.cmp": [
+          "blink-cmp-copilot"
+        ],
+        "auto": [
+          "blink-cmp-copilot"
+        ]
+      }
     },
     "sidekick": {
       "category": "ai",
       "import": "lazyvim.plugins.extras.ai.sidekick",
-      "name": "sidekick"
+      "name": "sidekick",
+      "extraPlugins": [
+        "sidekick-nvim"
+      ]
     },
     "supermaven": {
       "category": "ai",
       "import": "lazyvim.plugins.extras.ai.supermaven",
-      "name": "supermaven"
+      "name": "supermaven",
+      "extraPlugins": [
+        "supermaven-nvim"
+      ]
     },
     "tabnine": {
       "category": "ai",
       "import": "lazyvim.plugins.extras.ai.tabnine",
-      "name": "tabnine"
+      "name": "tabnine",
+      "extraPlugins": [
+        "cmp-tabnine"
+      ]
     }
   },
   "coding": {
     "blink": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.blink",
-      "name": "blink"
+      "name": "blink",
+      "extraPlugins": [
+        "blink-cmp",
+        "blink-compat",
+        "friendly-snippets"
+      ],
+      "excludePlugins": [
+        "nvim-cmp"
+      ]
     },
     "luasnip": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.luasnip",
-      "name": "luasnip"
+      "name": "luasnip",
+      "extraPlugins": [
+        "luasnip"
+      ],
+      "extraPluginsByCmp": {
+        "nvim-cmp": [
+          "cmp_luasnip"
+        ]
+      },
+      "excludePlugins": [
+        "nvim-snippets"
+      ]
     },
     "mini-comment": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.mini-comment",
-      "name": "mini-comment"
+      "name": "mini-comment",
+      "extraPlugins": [
+        {
+          "name": "mini.comment",
+          "nixpkg": "mini-nvim"
+        },
+        "nvim-ts-context-commentstring"
+      ]
     },
     "mini-snippets": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.mini-snippets",
-      "name": "mini-snippets"
+      "name": "mini-snippets",
+      "extraPlugins": [
+        {
+          "name": "mini.snippets",
+          "nixpkg": "mini-nvim"
+        },
+        "friendly-snippets"
+      ],
+      "excludePlugins": [
+        "nvim-snippets"
+      ]
     },
     "mini-surround": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.mini-surround",
-      "name": "mini-surround"
+      "name": "mini-surround",
+      "extraPlugins": [
+        {
+          "name": "mini.surround",
+          "nixpkg": "mini-nvim"
+        }
+      ]
     },
     "neogen": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.neogen",
-      "name": "neogen"
+      "name": "neogen",
+      "extraPlugins": [
+        "neogen"
+      ]
     },
     "nvim-cmp": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.nvim-cmp",
-      "name": "nvim-cmp"
+      "name": "nvim-cmp",
+      "extraPlugins": [
+        "nvim-cmp",
+        "cmp-nvim-lsp",
+        "cmp-buffer",
+        "cmp-path",
+        "nvim-snippets",
+        "friendly-snippets",
+        "cmp-cmdline",
+        "cmp-emoji",
+        "cmp-nvim-lua",
+        "cmp-cmdline-history"
+      ],
+      "excludePlugins": [
+        "blink-cmp",
+        "blink-compat"
+      ]
     },
     "yanky": {
       "category": "coding",
       "import": "lazyvim.plugins.extras.coding.yanky",
-      "name": "yanky"
+      "name": "yanky",
+      "extraPlugins": [
+        "yanky-nvim"
+      ]
     }
   },
   "dap": {
     "core": {
       "category": "dap",
       "import": "lazyvim.plugins.extras.dap.core",
-      "name": "core"
+      "name": "core",
+      "extraPlugins": [
+        "nvim-dap",
+        "nvim-dap-ui",
+        "nvim-dap-virtual-text",
+        "nvim-nio",
+        "one-small-step-for-vimkind"
+      ]
     },
     "nlua": {
       "category": "dap",
@@ -109,17 +206,29 @@
     "dial": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.dial",
-      "name": "dial"
+      "name": "dial",
+      "extraPlugins": [
+        "dial-nvim"
+      ]
     },
     "fzf": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.fzf",
-      "name": "fzf"
+      "name": "fzf",
+      "extraPlugins": [
+        "fzf-lua"
+      ],
+      "excludePlugins": [
+        "telescope-nvim"
+      ]
     },
     "harpoon2": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.harpoon2",
-      "name": "harpoon2"
+      "name": "harpoon2",
+      "extraPlugins": [
+        "harpoon"
+      ]
     },
     "illuminate": {
       "category": "editor",
@@ -129,7 +238,10 @@
     "inc-rename": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.inc-rename",
-      "name": "inc-rename"
+      "name": "inc-rename",
+      "extraPlugins": [
+        "inc-rename-nvim"
+      ]
     },
     "leap": {
       "category": "editor",
@@ -139,17 +251,35 @@
     "mini-diff": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.mini-diff",
-      "name": "mini-diff"
+      "name": "mini-diff",
+      "extraPlugins": [
+        {
+          "name": "mini.diff",
+          "nixpkg": "mini-nvim"
+        }
+      ]
     },
     "mini-files": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.mini-files",
-      "name": "mini-files"
+      "name": "mini-files",
+      "extraPlugins": [
+        {
+          "name": "mini.files",
+          "nixpkg": "mini-nvim"
+        }
+      ]
     },
     "mini-move": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.mini-move",
-      "name": "mini-move"
+      "name": "mini-move",
+      "extraPlugins": [
+        {
+          "name": "mini.move",
+          "nixpkg": "mini-nvim"
+        }
+      ]
     },
     "navic": {
       "category": "editor",
@@ -159,7 +289,10 @@
     "neo-tree": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.neo-tree",
-      "name": "neo-tree"
+      "name": "neo-tree",
+      "extraPlugins": [
+        "neo-tree-nvim"
+      ]
     },
     "outline": {
       "category": "editor",
@@ -169,12 +302,18 @@
     "overseer": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.overseer",
-      "name": "overseer"
+      "name": "overseer",
+      "extraPlugins": [
+        "overseer-nvim"
+      ]
     },
     "refactoring": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.refactoring",
-      "name": "refactoring"
+      "name": "refactoring",
+      "extraPlugins": [
+        "refactoring-nvim"
+      ]
     },
     "snacks_explorer": {
       "category": "editor",
@@ -189,10 +328,23 @@
     "telescope": {
       "category": "editor",
       "import": "lazyvim.plugins.extras.editor.telescope",
-      "name": "telescope"
+      "name": "telescope",
+      "extraPlugins": [
+        "telescope-nvim",
+        "telescope-undo-nvim",
+        "scope-nvim"
+      ],
+      "excludePlugins": [
+        "fzf-lua"
+      ]
     }
   },
   "formatting": {
+    "biome": {
+      "category": "formatting",
+      "import": "lazyvim.plugins.extras.formatting.biome",
+      "name": "biome"
+    },
     "black": {
       "category": "formatting",
       "import": "lazyvim.plugins.extras.formatting.black",
@@ -208,7 +360,10 @@
     "angular": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.angular",
-      "name": "angular"
+      "name": "angular",
+      "impliedExtras": [
+        "lang.typescript"
+      ]
     },
     "ansible": {
       "category": "lang",
@@ -218,22 +373,44 @@
     "astro": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.astro",
-      "name": "astro"
+      "name": "astro",
+      "impliedExtras": [
+        "lang.typescript"
+      ]
     },
     "clangd": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.clangd",
-      "name": "clangd"
+      "name": "clangd",
+      "extraPlugins": [
+        "clangd_extensions-nvim"
+      ]
     },
     "clojure": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.clojure",
-      "name": "clojure"
+      "name": "clojure",
+      "extraPlugins": [
+        "nvim-treesitter-sexp",
+        "baleia-nvim",
+        "conjure"
+      ],
+      "extraPluginsByCmp": {
+        "nvim-cmp": [
+          "cmp-conjure"
+        ]
+      }
     },
     "cmake": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.cmake",
-      "name": "cmake"
+      "name": "cmake",
+      "extraPlugins": [
+        "cmake-tools-nvim"
+      ],
+      "excludePlugins": [
+        "cmake-tools-nvim"
+      ]
     },
     "dart": {
       "category": "lang",
@@ -248,7 +425,11 @@
     "dotnet": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.dotnet",
-      "name": "dotnet"
+      "name": "dotnet",
+      "extraPlugins": [
+        "neotest-dotnet",
+        "omnisharp-extended-lsp-nvim"
+      ]
     },
     "elixir": {
       "category": "lang",
@@ -283,7 +464,11 @@
     "go": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.go",
-      "name": "go"
+      "name": "go",
+      "extraPlugins": [
+        "nvim-dap-go",
+        "neotest-golang"
+      ]
     },
     "haskell": {
       "category": "lang",
@@ -298,12 +483,19 @@
     "java": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.java",
-      "name": "java"
+      "name": "java",
+      "extraPlugins": [
+        "nvim-jdtls"
+      ]
     },
     "json": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.json",
-      "name": "json"
+      "name": "json",
+      "extraPlugins": [
+        "SchemaStore-nvim",
+        "crates-nvim"
+      ]
     },
     "julia": {
       "category": "lang",
@@ -318,12 +510,20 @@
     "lean": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.lean",
-      "name": "lean"
+      "name": "lean",
+      "extraPlugins": [
+        "lean-nvim"
+      ]
     },
     "markdown": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.markdown",
-      "name": "markdown"
+      "name": "markdown",
+      "extraPlugins": [
+        "markdown-preview-nvim",
+        "render-markdown-nvim",
+        "zk-nvim"
+      ]
     },
     "nix": {
       "category": "lang",
@@ -353,12 +553,32 @@
     "python": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.python",
-      "name": "python"
+      "name": "python",
+      "extraPlugins": [
+        "neotest-python",
+        "nvim-dap-python",
+        "venv-selector-nvim"
+      ]
+    },
+    "quarto": {
+      "category": "lang",
+      "import": "lazyvim.plugins.extras.lang.quarto",
+      "name": "quarto",
+      "extraPlugins": [
+        "quarto-nvim",
+        "otter-nvim",
+        "vim-slime",
+        "jupytext-nvim",
+        "img-clip-nvim"
+      ]
     },
     "r": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.r",
-      "name": "r"
+      "name": "r",
+      "extraPlugins": [
+        "neotest-testthat"
+      ]
     },
     "rego": {
       "category": "lang",
@@ -373,7 +593,12 @@
     "rust": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.rust",
-      "name": "rust"
+      "name": "rust",
+      "extraPlugins": [
+        "rustaceanvim",
+        "crates-nvim",
+        "neotest-rust"
+      ]
     },
     "scala": {
       "category": "lang",
@@ -408,12 +633,20 @@
     "tex": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.tex",
-      "name": "tex"
+      "name": "tex",
+      "extraPlugins": [
+        "vimtex"
+      ]
     },
     "thrift": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.thrift",
       "name": "thrift"
+    },
+    "typescript": {
+      "category": "lang",
+      "import": "lazyvim.plugins.extras.lang.typescript",
+      "name": "typescript"
     },
     "toml": {
       "category": "lang",
@@ -428,22 +661,34 @@
     "typst": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.typst",
-      "name": "typst"
+      "name": "typst",
+      "extraPlugins": [
+        "typst-preview-nvim"
+      ]
     },
     "vue": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.vue",
-      "name": "vue"
+      "name": "vue",
+      "impliedExtras": [
+        "lang.typescript"
+      ]
     },
     "yaml": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.yaml",
-      "name": "yaml"
+      "name": "yaml",
+      "extraPlugins": [
+        "SchemaStore-nvim"
+      ]
     },
     "zig": {
       "category": "lang",
       "import": "lazyvim.plugins.extras.lang.zig",
-      "name": "zig"
+      "name": "zig",
+      "extraPlugins": [
+        "neotest-zig"
+      ]
     }
   },
   "linting": {
@@ -469,7 +714,10 @@
     "core": {
       "category": "test",
       "import": "lazyvim.plugins.extras.test.core",
-      "name": "core"
+      "name": "core",
+      "extraPlugins": [
+        "neotest"
+      ]
     }
   },
   "ui": {
@@ -486,7 +734,10 @@
     "edgy": {
       "category": "ui",
       "import": "lazyvim.plugins.extras.ui.edgy",
-      "name": "edgy"
+      "name": "edgy",
+      "extraPlugins": [
+        "edgy-nvim"
+      ]
     },
     "indent-blankline": {
       "category": "ui",
@@ -496,7 +747,13 @@
     "mini-animate": {
       "category": "ui",
       "import": "lazyvim.plugins.extras.ui.mini-animate",
-      "name": "mini-animate"
+      "name": "mini-animate",
+      "extraPlugins": [
+        {
+          "name": "mini.animate",
+          "nixpkg": "mini-nvim"
+        }
+      ]
     },
     "mini-indentscope": {
       "category": "ui",
@@ -511,12 +768,18 @@
     "smear-cursor": {
       "category": "ui",
       "import": "lazyvim.plugins.extras.ui.smear-cursor",
-      "name": "smear-cursor"
+      "name": "smear-cursor",
+      "extraPlugins": [
+        "smear-cursor-nvim"
+      ]
     },
     "treesitter-context": {
       "category": "ui",
       "import": "lazyvim.plugins.extras.ui.treesitter-context",
-      "name": "treesitter-context"
+      "name": "treesitter-context",
+      "extraPlugins": [
+        "nvim-treesitter-context"
+      ]
     }
   },
   "util": {
@@ -543,12 +806,21 @@
     "mini-hipatterns": {
       "category": "util",
       "import": "lazyvim.plugins.extras.util.mini-hipatterns",
-      "name": "mini-hipatterns"
+      "name": "mini-hipatterns",
+      "extraPlugins": [
+        {
+          "name": "mini.hipatterns",
+          "nixpkg": "mini-nvim"
+        }
+      ]
     },
     "octo": {
       "category": "util",
       "import": "lazyvim.plugins.extras.util.octo",
-      "name": "octo"
+      "name": "octo",
+      "extraPlugins": [
+        "octo-nvim"
+      ]
     },
     "project": {
       "category": "util",
@@ -558,12 +830,25 @@
     "rest": {
       "category": "util",
       "import": "lazyvim.plugins.extras.util.rest",
-      "name": "rest"
+      "name": "rest",
+      "extraPlugins": [
+        "kulala-nvim"
+      ]
     },
     "startuptime": {
       "category": "util",
       "import": "lazyvim.plugins.extras.util.startuptime",
-      "name": "startuptime"
+      "name": "startuptime",
+      "extraPlugins": [
+        "vim-startuptime"
+      ]
+    }
+  },
+  "vscode": {
+    "default": {
+      "category": "vscode",
+      "import": "lazyvim.plugins.extras.vscode",
+      "name": "default"
     }
   }
 }

@@ -2,6 +2,8 @@
 
 Nix flake providing a home-manager module for declarative LazyVim configuration.
 
+Inspired by @azuwis's Nix setup and [pfassina/lazyvim-nix](https://github.com/pfassina/lazyvim-nix/blob/main/README.md).
+
 ## Features
 
 - 🎯 **Declarative Configuration** - Manage LazyVim entirely through Nix
@@ -26,7 +28,7 @@ Nix flake providing a home-manager module for declarative LazyVim configuration.
   outputs = { nixpkgs, home-manager, nix4lazyvim, ... }: {
     homeConfigurations.youruser = home-manager.lib.homeManagerConfiguration {
       modules = [
-        nix4lazyvim.homeManagerModules.default
+        nix4lazyvim.homeModules.default
         {
           programs.lazyvim = {
             enable = true;
@@ -35,6 +37,8 @@ Nix flake providing a home-manager module for declarative LazyVim configuration.
             extras.lang.rust.enable = true;
             extras.lang.python.enable = true;
             extras.ai.copilot.enable = true;
+
+            appName = "lazyvim";     # Optional: use ~/.config/lazyvim/
 
             # Choose your tools
             cmp = "blink.cmp";      # or "nvim-cmp" or "auto"
@@ -88,10 +92,14 @@ programs.lazyvim = {
 
   neovim = pkgs.neovim;            # Override Neovim package
 
+  appName = "nvim";                # Config dir name, defaults to ~/.config/nvim/
+
   configDir = ./nvim-config;        # Path to your lua/ config directory
 
   extraPlugins = [ ... ];           # Add plugins beyond LazyVim core
+  excludePlugins = [ ... ];         # Drop core or metadata-provided plugins
 
+  installDependencies = true;       # Default dependency policy for enabled extras
   extraPackages = [ ... ];          # Add system tools
 
   cmp = "auto";                     # Completion: "nvim-cmp" | "blink.cmp" | "auto"
@@ -105,6 +113,7 @@ programs.lazyvim = {
     lang.go.enable = true;
     ai.copilot.enable = true;
     editor.dial.enable = true;
+    lang.php.installDependencies = false;  # Per-extra override
     # No need to write Nix modules - extras are data-driven!
   };
 };
@@ -134,7 +143,7 @@ Then reference it in your home-manager config:
 ```nix
 programs.lazyvim = {
   enable = true;
-  configDir = ./my-nvim-config;  # All files symlinked to ~/.config/nvim/
+  configDir = ./my-nvim-config;  # Symlinked to ~/.config/<appName>/ (default: nvim)
 };
 ```
 
@@ -160,7 +169,13 @@ Just enable them in your config:
 programs.lazyvim.extras.lang.python.enable = true;
 ```
 
-If you need additional tools (LSPs, formatters), add them to `extraPackages`:
+Enabled extras install mapped dependencies by default. To opt one out:
+
+```nix
+programs.lazyvim.extras.lang.python.installDependencies = false;
+```
+
+If you need additional tools beyond the mappings, add them to `extraPackages`:
 
 ```nix
 programs.lazyvim.extraPackages = with pkgs; [
@@ -202,10 +217,10 @@ nix4lazyvim/
 2. **Lazy.nvim Integration**: Uses `dev.path` to point lazy.nvim to Nix store
 3. **System Tools**: LSPs, formatters, etc. are in `extraPackages` (added to PATH)
 4. **Data-driven Extras**: 
-   - `source/extras.json` lists supported LazyVim extras
+   - `source/extras.json` lists supported LazyVim extras plus plugin add/remove metadata
    - `nix/lib/data-loading.nix` loads the JSON and provides helper functions
    - Main module dynamically creates options for all extras
-   - When you enable an extra, it adds the import path to lazy.nvim spec
+   - When you enable an extra, it adds the import path to lazy.nvim spec and any mapped plugins to `dev.path`
    - **No manual module creation needed** - all 300+ extras work automatically!
 
 ## Contributing

@@ -1,38 +1,207 @@
 # Data loading utilities for nix4lazyvim
 { lib, pkgs }:
 
-rec {
-  # Load extras metadata (category, name, import path)
+let
+  normalizeExtraName = name: builtins.replaceStrings [ "-" ] [ "_" ] name;
+  denormalizeExtraName = name: builtins.replaceStrings [ "_" ] [ "-" ] name;
+
+  # Load extras metadata (category, name, import path, plugin metadata)
   extrasMetadata = builtins.fromJSON (builtins.readFile ../../source/extras.json);
 
-  # Load extras dependencies (plugins, packages)
+  # Load extras dependencies (packages)
   extrasDependencies = builtins.fromJSON (builtins.readFile ../../source/dependencies.json);
 
   # Load core plugins list
   pluginsData = builtins.fromJSON (builtins.readFile ../../source/plugins.json);
 
-  # Convert plugins data to actual vim plugin packages
-  getCorePlugins =
+  getExtraMetadata =
+    categoryName: extraName:
     let
-      # Convert a single plugin entry to a package or attrset
-      convertPlugin = pluginData:
-        let
-          # Handle special cases like nvim-treesitter.withAllGrammars
-          pkg = if pluginData.special or null == "withAllGrammars" then
+      categoryExtras = extrasMetadata.${categoryName} or { };
+      candidates = lib.unique [
+        extraName
+        (normalizeExtraName extraName)
+        (denormalizeExtraName extraName)
+      ];
+      matchedName = lib.findFirst (candidate: builtins.hasAttr candidate categoryExtras) null candidates;
+    in
+    if matchedName == null then null else categoryExtras.${matchedName};
+
+  requireExtraMetadata =
+    categoryName: extraName:
+    let
+      metadata = getExtraMetadata categoryName extraName;
+    in
+    if metadata != null then
+      metadata
+    else
+      throw "Unknown LazyVim extra: ${categoryName}.${extraName}\nUpdate source/extras.json to sync with latest LazyVim.";
+
+  resolveVimPlugin = pluginRef:
+    let
+      resolved = lib.attrByPath (lib.splitString "." pluginRef) null pkgs.vimPlugins;
+    in
+    if resolved != null && lib.isDerivation resolved then
+      resolved
+    else
+      throw "Unknown vim plugin `${pluginRef}` referenced in source metadata.";
+
+  convertPluginEntry =
+    pluginData:
+    if builtins.isString pluginData then
+      resolveVimPlugin pluginData
+    else
+      let
+        pkg =
+          if (pluginData.special or null) == "withAllGrammars" then
             pkgs.vimPlugins.nvim-treesitter.withAllGrammars
           else
-            pkgs.vimPlugins.${pluginData.nixpkg};
-        in
-        # If the plugin name differs from the package name, return an attrset
-        if pluginData.name != pluginData.nixpkg && pluginData.special or null == null then
-          {
-            name = pluginData.name;
-            path = pkg;
-          }
-        else
-          pkg;
+            resolveVimPlugin pluginData.nixpkg;
+        pluginName = pluginData.name or pluginData.nixpkg;
+      in
+      if pluginName != pluginData.nixpkg && (pluginData.special or null) == null then
+        {
+          name = pluginName;
+          path = pkg;
+        }
+      else
+        pkg;
+
+  pluginEntryId =
+    pluginData:
+    if builtins.isString pluginData then
+      "pkg:${pluginData}"
+    else if pluginData ? special then
+      "special:${pluginData.nixpkg}:${pluginData.special}"
+    else if pluginData ? name then
+      "named:${pluginData.name}:${pluginData.nixpkg}"
+    else
+      "pkg:${pluginData.nixpkg}";
+
+  uniquePluginEntries =
+    entries:
+    (
+      lib.foldl'
+        (
+          acc: entry:
+          let
+            key = pluginEntryId entry;
+          in
+          if builtins.elem key acc.keys then
+            acc
+          else
+            {
+              keys = acc.keys ++ [ key ];
+              values = acc.values ++ [ entry ];
+            }
+        )
+        {
+          keys = [ ];
+          values = [ ];
+        }
+        entries
+    ).values;
+
+  getConditionalPluginEntries =
+    fieldName: cmp: extra:
+    let
+      conditionalField = "${fieldName}ByCmp";
+      byCmp = extra.${conditionalField} or { };
     in
-    builtins.map convertPlugin pluginsData.core;
+    if cmp != null then
+      byCmp.${cmp} or [ ]
+    else
+      [ ];
+
+  getPluginEntriesForExtras =
+    fieldName: { extras, cmp ? null }:
+    uniquePluginEntries (
+      lib.flatten (
+        map
+          (extra: (extra.${fieldName} or [ ]) ++ getConditionalPluginEntries fieldName cmp extra)
+          extras
+      )
+    );
+
+  parseExtraRef =
+    ref:
+    let
+      parts = lib.splitString "." ref;
+    in
+    if builtins.length parts == 2 then
+      {
+        category = builtins.elemAt parts 0;
+        name = builtins.elemAt parts 1;
+      }
+    else
+      throw "Invalid extra reference `${ref}` in source/extras.json. Expected `<category>.<name>`.";
+
+  mergeExtraConfig =
+    left: right:
+    {
+      enable = true;
+      installDependencies = (left.installDependencies or false) || (right.installDependencies or false);
+    };
+
+  mergeResolvedExtras =
+    extras:
+    builtins.attrValues (
+      lib.foldl'
+        (
+          acc: extra:
+          let
+            key = "${extra.category}.${extra.name}";
+          in
+          if builtins.hasAttr key acc then
+            acc
+            // {
+              "${key}" = acc.${key} // {
+                config = mergeExtraConfig acc.${key}.config extra.config;
+              };
+            }
+          else
+            acc // { "${key}" = extra; }
+        )
+        { }
+        extras
+    );
+
+  expandResolvedExtra =
+    seen: extra:
+    let
+      key = "${extra.category}.${extra.name}";
+      impliedRefs = extra.impliedExtras or [ ];
+      impliedExtras =
+        lib.flatten (
+          map
+            (
+              ref:
+              let
+                parsed = parseExtraRef ref;
+                impliedExtra =
+                  (requireExtraMetadata parsed.category parsed.name)
+                  // {
+                    config = extra.config;
+                  };
+              in
+              expandResolvedExtra (seen ++ [ key ]) impliedExtra
+            )
+            (lib.filter (ref:
+              let
+                parsed = parseExtraRef ref;
+                impliedKey = "${parsed.category}.${parsed.name}";
+              in
+              !(builtins.elem impliedKey (seen ++ [ key ]))
+            ) impliedRefs)
+        );
+    in
+    [ extra ] ++ impliedExtras;
+in
+rec {
+  inherit extrasMetadata extrasDependencies pluginsData getExtraMetadata requireExtraMetadata;
+
+  # Convert plugins data to actual vim plugin packages
+  getCorePlugins = builtins.map convertPluginEntry pluginsData.core;
 
   # Resolve a dotted nixpkgs attribute path like "python3Packages.ruff"
   resolvePackage = pkgName:
@@ -61,48 +230,45 @@ rec {
   getCoreDependencyPackages = getPackagesForTools (extrasDependencies.core or [ ]);
 
   # Helper to get all available extras as a list
-  # Returns: [ { category = "lang"; name = "python"; import = "lazyvim.plugins.extras.lang.python"; } ... ]
   getAllExtras =
     let
-      processCategory = categoryName: categoryExtras:
-        lib.mapAttrsToList
-          (extraName: extraData: extraData)
-          categoryExtras;
+      processCategory = categoryName: categoryExtras: lib.mapAttrsToList (_: extraData: extraData) categoryExtras;
       allCategories = lib.mapAttrsToList processCategory extrasMetadata;
     in
     lib.flatten allCategories;
 
   # Helper to get enabled extras from config
-  # extrasConfig: the cfg.extras attrset
-  # Returns: list of { name, category, import }
   getEnabledExtras = extrasConfig:
     let
-      processCategory = categoryName: categoryExtras:
+      explicitExtras =
         let
-          enabledInCategory = lib.filterAttrs
-            (extraName: extraConfig: extraConfig.enable or false)
-            categoryExtras;
-        in
-        lib.mapAttrsToList
-          (extraName: extraConfig:
+          processCategory = categoryName: categoryExtras:
             let
-              # Normalize hyphens to underscores to match extras.json keys
-              normalizedName = builtins.replaceStrings [ "-" ] [ "_" ] extraName;
-              metadata = extrasMetadata.${categoryName}.${normalizedName} or null;
+              enabledInCategory = lib.filterAttrs (_: extraConfig: extraConfig.enable or false) categoryExtras;
             in
-            if metadata != null then
-              {
-                inherit (metadata) name category import;
-                config = extraConfig;
-              }
-            else
-              throw "Unknown LazyVim extra: ${categoryName}.${extraName}\nUpdate source/extras.json to sync with latest LazyVim."
-          )
-          enabledInCategory;
+            lib.mapAttrsToList
+              (
+                extraName: extraConfig:
+                (requireExtraMetadata categoryName extraName)
+                // {
+                  config = extraConfig;
+                }
+              )
+              enabledInCategory;
 
-      allCategories = lib.mapAttrsToList processCategory extrasConfig;
+          allCategories = lib.mapAttrsToList processCategory extrasConfig;
+        in
+        lib.flatten allCategories;
+
+      expandedExtras = lib.flatten (map (extra: expandResolvedExtra [ ] extra) explicitExtras);
     in
-    lib.flatten allCategories;
+    mergeResolvedExtras expandedExtras;
+
+  getExtraPluginPackages =
+    args: builtins.map convertPluginEntry (getPluginEntriesForExtras "extraPlugins" args);
+
+  getExcludedPluginPackages =
+    args: builtins.map convertPluginEntry (getPluginEntriesForExtras "excludePlugins" args);
 
   # Resolve packages from source/dependencies.json for enabled extras that opt in.
   # Unmapped tools or nixpkg paths missing from nixpkgs are skipped.

@@ -22,23 +22,26 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        package = pkgs.callPackage ./nix/package.nix {
+          inherit lazyvim-starter;
+        };
       in
       {
         # Run a minimal LazyVim: nix run github:…
-        packages.default = pkgs.callPackage ./nix/package.nix {
-          inherit lazyvim-starter;
-        };
+        packages.default = package;
 
-        apps.default = flake-utils.lib.mkApp {
-          drv = self.packages.${system}.default;
-          name = "nvim";
-        };
+        apps.default =
+          flake-utils.lib.mkApp {
+            drv = package;
+            name = "nvim";
+          }
+          // {
+            meta = package.meta;
+          };
       }
     )
     // {
       # Home-manager module — import in your home-manager configuration
       homeModules.default = { imports = [ ./nix ]; };
-      # Alias for backward compatibility
-      homeManagerModules.default = self.homeModules.default;
     };
 }

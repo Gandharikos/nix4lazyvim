@@ -63,7 +63,7 @@ The module automatically handles:
 Any `lazy-lock.json` you keep in `configDir` is symlinked like the rest of your configuration.
 
 Your files from configDir:
-- **lua/** - All files are symlinked to `~/.config/nvim/lua/`
+- **lua/** - All files are symlinked to `~/.config/<appName>/lua/` (default: `~/.config/nvim/lua/`)
 - **Any other directories/files** - Also symlinked (e.g., `ftplugin/`, `after/`)
 
 ## File Loading Order
