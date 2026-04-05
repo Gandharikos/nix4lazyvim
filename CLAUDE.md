@@ -228,7 +228,7 @@ LazyVim running with Nix-managed plugins
 
 **`source/version.txt`** - LazyVim version and update timestamp
 
-**`source/dependencies.json`** - Tool dependency mappings for each extra
+**`source/dependencies.json`** - Flattened nixpkgs package mappings for each extra
 
 **Note:** `source/` is maintained directly in this repository.
 

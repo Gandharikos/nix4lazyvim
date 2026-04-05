@@ -8,7 +8,7 @@ let
   # Load extras metadata (category, name, import path, plugin metadata)
   extrasMetadata = builtins.fromJSON (builtins.readFile ../../source/extras.json);
 
-  # Load extras dependencies (packages)
+  # Load dependency metadata from source/dependencies.json
   extrasDependencies = builtins.fromJSON (builtins.readFile ../../source/dependencies.json);
 
   # Load core plugins list
@@ -195,24 +195,21 @@ rec {
     in
     if resolved != null && lib.isDerivation resolved then resolved else null;
 
-  getPackagesForTools = tools:
+  getPackagesForPaths = paths:
     lib.unique (
       lib.filter
         (pkg: pkg != null)
-        (lib.flatten (
-          map
-            (
-              tool:
-              (lib.optional (tool ? nixpkg) (resolvePackage tool.nixpkg))
-              ++ map
-                (dep: resolvePackage dep.nixpkg)
-                (lib.filter (dep: dep ? nixpkg) (tool.runtime_dependencies or [ ]))
-            )
-            tools
-        ))
+        (map resolvePackage paths)
     );
 
-  getCoreDependencyPackages = getPackagesForTools (extrasDependencies.core or [ ]);
+  getPackagesForDependencySpec =
+    spec:
+    if builtins.isList spec then
+      getPackagesForPaths spec
+    else
+      getPackagesForPaths ((spec.packages or [ ]) ++ (spec.runtime or [ ]));
+
+  getCoreDependencyPackages = getPackagesForDependencySpec (extrasDependencies.core or [ ]);
 
   # Helper to get all available extras as a list
   getAllExtras =
@@ -255,8 +252,8 @@ rec {
   getExcludedPluginPackages =
     extras: builtins.map convertPluginEntry (getPluginEntriesForExtras "excludePlugins" extras);
 
-  # Resolve packages from source/dependencies.json for enabled extras that opt in.
-  # Unmapped tools or nixpkg paths missing from nixpkgs are skipped.
+  # Resolve package paths from source/dependencies.json for enabled extras that opt in.
+  # Missing nixpkgs paths are skipped.
   getExtraDependencyPackages = enabledExtras:
     lib.unique (
       lib.filter
@@ -267,10 +264,10 @@ rec {
               extra:
               let
                 extraKey = "${extra.category}.${extra.name}";
-                extraTools = extrasDependencies.extras.${extraKey} or [ ];
+                extraDependencySpec = extrasDependencies.extras.${extraKey} or [ ];
               in
               if extra.config.enableDependencies or false then
-                getPackagesForTools extraTools
+                getPackagesForDependencySpec extraDependencySpec
               else
                 [ ]
             )

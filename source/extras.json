@@ -504,8 +504,7 @@
       "name": "markdown",
       "extraPlugins": [
         "markdown-preview-nvim",
-        "render-markdown-nvim",
-        "zk-nvim"
+        "render-markdown-nvim"
       ]
     },
     "nix": {
