@@ -61,7 +61,7 @@ The home-manager module (`nix/module.nix`) is **data-driven** and exposes:
 **User-facing options:**
 - **`programs.lazyvim.enable`** — Enable LazyVim
 - **`programs.lazyvim.neovim`** — Override Neovim package (for nightly, etc.)
-- **`programs.lazyvim.appName`** — Config directory name / `NVIM_APPNAME` value (default: `nvim`)
+- **`programs.lazyvim.appName`** — Config directory name under `~/.config/`; when not `nvim`, also creates a shell alias like `<appName>='NVIM_APPNAME=<appName> nvim'`
 - **`programs.lazyvim.configDir`** — Path to custom lua/ config directory (symlinked under `~/.config/<appName>/`)
 - **`programs.lazyvim.extraPlugins`** — Add plugins beyond LazyVim core (core plugins auto-loaded from source/plugins.json)
 - **`programs.lazyvim.excludePlugins`** — Remove core or metadata-provided plugins from the generated dev.path

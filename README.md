@@ -39,6 +39,7 @@ Inspired by @azuwis's Nix setup and [pfassina/lazyvim-nix](https://github.com/pf
             extras.ai.copilot.enable = true;
 
             appName = "lazyvim";     # Optional: use ~/.config/lazyvim/
+            # Also creates a shell alias: lazyvim='NVIM_APPNAME=lazyvim nvim'
 
             # Choose your tools
             cmp = "blink.cmp";      # or "nvim-cmp" or "auto"
@@ -93,6 +94,7 @@ programs.lazyvim = {
   neovim = pkgs.neovim;            # Override Neovim package
 
   appName = "nvim";                # Config dir name, defaults to ~/.config/nvim/
+                                   # If not "nvim", also creates a shell alias named <appName>
 
   configDir = ./nvim-config;        # Path to your lua/ config directory
 

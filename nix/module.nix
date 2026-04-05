@@ -76,9 +76,12 @@ in
       default = "nvim";
       example = "lazyvim";
       description = ''
-        The app name used for Neovim's `NVIM_APPNAME`.
-        This determines the config directory under `~/.config/`
-        (for example, `"lazyvim"` uses `~/.config/lazyvim/`).
+        The config directory name under `~/.config/`.
+        For example, `"lazyvim"` uses `~/.config/lazyvim/`.
+
+        When set to something other than `"nvim"`, this module does not wrap
+        the Neovim binary. Start it manually with
+        `NVIM_APPNAME=<appName> nvim`.
       '';
     };
 
@@ -359,18 +362,6 @@ in
             done
           '';
 
-      wrappedNeovim =
-        if cfg.appName == "nvim" then
-          cfg.neovim
-        else
-          pkgs.symlinkJoin {
-            name = "${cfg.appName}-neovim";
-            paths = [ cfg.neovim ];
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-            postBuild = ''
-              wrapProgram $out/bin/nvim --set NVIM_APPNAME ${lib.escapeShellArg cfg.appName}
-            '';
-          };
     in
     {
       programs.lazyvim = {
@@ -390,10 +381,14 @@ in
           "${cfg.appName}/init.lua".text = generatedInitLua;
         };
 
+      home.shellAliases = lib.optionalAttrs (cfg.appName != "nvim") {
+        "${cfg.appName}" = "NVIM_APPNAME=${lib.escapeShellArg cfg.appName} nvim";
+      };
+
       # Configure Neovim with LazyVim
       programs.neovim = {
         enable = true;
-        package = wrappedNeovim;
+        package = cfg.neovim;
         extraPackages = lib.unique cfg.extraPackages;
 
         withNodeJs = false;
