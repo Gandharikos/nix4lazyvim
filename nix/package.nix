@@ -9,8 +9,7 @@
   neovim ? pkgs.neovim,
   extraPackages ? [ ],
   extraPlugins ? [ ],
-  lazy-lock ? "",
-  starterRepo,
+  lazyvim-starter,
 }:
 let
   defaultPlugins = with pkgs.vimPlugins; [
@@ -150,7 +149,7 @@ in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "lazyvim";
   version = "unstable";
-  src = starterRepo;
+  src = lazyvim-starter;
 
   nativeBuildInputs = [ makeWrapper ];
   buildInputs = runtimeDeps;
@@ -167,13 +166,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     # Overwrite the starter's init.lua with our nix-generated one
     cp ${initLua} $out/config/init.lua
 
-    ${lib.optionalString (lazy-lock != "") ''
-      cp ${pkgs.writeText "lazy-lock.json" lazy-lock} $out/config/lazy-lock.json
-    ''}
-
     # On first run: copy the config skeleton to ~/.config/nvim so users can customise it
     makeWrapper ${lib.getExe neovim} $out/bin/nvim \
-      --run "d=\"\${XDG_CONFIG_HOME:-\$HOME/.config}/nvim\"; [ -d \"\$d\" ] || { mkdir -p \"\$d\"; ${pkgs.coreutils}/bin/cp -r $out/config/. \"\$d/\"; chmod -R u+w \"\$d\"; }" \
+      --run 'd="''${XDG_CONFIG_HOME:-$HOME/.config}/nvim"; [ -d "$d" ] || { mkdir -p "$d"; ${pkgs.coreutils}/bin/cp -r $out/config/. "$d/"; chmod -R u+w "$d"; }' \
       --prefix PATH : '${lib.makeBinPath finalAttrs.buildInputs}'
 
     runHook postInstall

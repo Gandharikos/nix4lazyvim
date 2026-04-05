@@ -26,7 +26,7 @@
       {
         # Run a minimal LazyVim: nix run github:…
         packages.default = pkgs.callPackage ./nix/package.nix {
-          inherit pkgs lazyvim-starter;
+          inherit lazyvim-starter;
         };
 
         apps.default = flake-utils.lib.mkApp {
@@ -37,6 +37,8 @@
     )
     // {
       # Home-manager module — import in your home-manager configuration
-      homeManagerModules.default = { imports = [ ./nix ]; };
+      homeModules.default = { imports = [ ./nix ]; };
+      # Alias for backward compatibility
+      homeManagerModules.default = self.homeModules.default;
     };
 }

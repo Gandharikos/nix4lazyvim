@@ -1,1 +1,1 @@
-{ imports = [ ./lazyvim ]; }
+{ imports = [ ./module.nix ]; }

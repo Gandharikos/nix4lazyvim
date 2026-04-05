@@ -1,0 +1,142 @@
+{
+  "_comment": "Core LazyVim plugins - auto-loaded from nixpkgs.vimPlugins",
+  "_note": "This list matches the default LazyVim setup. Update when LazyVim changes its core plugin requirements.",
+  "core": [
+    {
+      "name": "LazyVim",
+      "nixpkg": "LazyVim",
+      "description": "LazyVim core plugin"
+    },
+    {
+      "name": "snacks.nvim",
+      "nixpkg": "snacks-nvim",
+      "description": "Snacks collection"
+    },
+    {
+      "name": "mini.pairs",
+      "nixpkg": "mini-nvim",
+      "description": "Auto pairs from mini.nvim"
+    },
+    {
+      "name": "ts-comments.nvim",
+      "nixpkg": "ts-comments-nvim",
+      "description": "Treesitter-based comments"
+    },
+    {
+      "name": "mini.ai",
+      "nixpkg": "mini-nvim",
+      "description": "Better text objects from mini.nvim"
+    },
+    {
+      "name": "lazydev.nvim",
+      "nixpkg": "lazydev-nvim",
+      "description": "Lazy development utilities"
+    },
+    {
+      "name": "tokyonight.nvim",
+      "nixpkg": "tokyonight-nvim",
+      "description": "Tokyo Night colorscheme"
+    },
+    {
+      "name": "catppuccin",
+      "nixpkg": "catppuccin-nvim",
+      "description": "Catppuccin colorscheme"
+    },
+    {
+      "name": "grug-far.nvim",
+      "nixpkg": "grug-far-nvim",
+      "description": "Search and replace"
+    },
+    {
+      "name": "flash.nvim",
+      "nixpkg": "flash-nvim",
+      "description": "Navigate with search labels"
+    },
+    {
+      "name": "which-key.nvim",
+      "nixpkg": "which-key-nvim",
+      "description": "Display keybindings"
+    },
+    {
+      "name": "gitsigns.nvim",
+      "nixpkg": "gitsigns-nvim",
+      "description": "Git decorations"
+    },
+    {
+      "name": "trouble.nvim",
+      "nixpkg": "trouble-nvim",
+      "description": "Pretty list for diagnostics"
+    },
+    {
+      "name": "todo-comments.nvim",
+      "nixpkg": "todo-comments-nvim",
+      "description": "Highlight TODO comments"
+    },
+    {
+      "name": "conform.nvim",
+      "nixpkg": "conform-nvim",
+      "description": "Formatter plugin"
+    },
+    {
+      "name": "nvim-lint",
+      "nixpkg": "nvim-lint",
+      "description": "Linting plugin"
+    },
+    {
+      "name": "nvim-treesitter",
+      "nixpkg": "nvim-treesitter.withAllGrammars",
+      "description": "Treesitter with all grammars",
+      "special": "withAllGrammars"
+    },
+    {
+      "name": "nvim-treesitter-textobjects",
+      "nixpkg": "nvim-treesitter-textobjects",
+      "description": "Treesitter text objects"
+    },
+    {
+      "name": "nvim-ts-autotag",
+      "nixpkg": "nvim-ts-autotag",
+      "description": "Auto close/rename HTML tags"
+    },
+    {
+      "name": "bufferline.nvim",
+      "nixpkg": "bufferline-nvim",
+      "description": "Buffer line"
+    },
+    {
+      "name": "lualine.nvim",
+      "nixpkg": "lualine-nvim",
+      "description": "Status line"
+    },
+    {
+      "name": "noice.nvim",
+      "nixpkg": "noice-nvim",
+      "description": "Better UI"
+    },
+    {
+      "name": "mini.icons",
+      "nixpkg": "mini-nvim",
+      "description": "Icons from mini.nvim"
+    },
+    {
+      "name": "nui.nvim",
+      "nixpkg": "nui-nvim",
+      "description": "UI component library"
+    },
+    {
+      "name": "nvim-lspconfig",
+      "nixpkg": "nvim-lspconfig",
+      "description": "LSP configuration"
+    },
+    {
+      "name": "persistence.nvim",
+      "nixpkg": "persistence-nvim",
+      "description": "Session management"
+    },
+    {
+      "name": "plenary.nvim",
+      "nixpkg": "plenary-nvim",
+      "description": "Lua utilities"
+    }
+  ]
+}
