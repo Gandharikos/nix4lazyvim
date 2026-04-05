@@ -65,10 +65,10 @@ The home-manager module (`nix/module.nix`) is **data-driven** and exposes:
 - **`programs.lazyvim.configDir`** — Path to custom lua/ config directory (symlinked under `~/.config/<appName>/`)
 - **`programs.lazyvim.extraPlugins`** — Add plugins beyond LazyVim core (core plugins auto-loaded from source/plugins.json)
 - **`programs.lazyvim.excludePlugins`** — Remove core or metadata-provided plugins from the generated dev.path
-- **`programs.lazyvim.installDependencies`** — Default dependency-install policy for enabled extras (default: `true`)
+- **`programs.lazyvim.enableDependencies`** — Default dependency-install policy for enabled extras (default: `false`)
 - **`programs.lazyvim.extraPackages`** — System tools/LSPs to include in PATH
 - **`programs.lazyvim.extras.{category}.{name}.enable`** — Enable LazyVim extras (auto-discovered from JSON)
-- **`programs.lazyvim.extras.{category}.{name}.installDependencies`** — Per-extra override for mapped tools and runtime dependencies
+- **`programs.lazyvim.extras.{category}.{name}.enableDependencies`** — Per-extra override for mapped tools and runtime dependencies
 
 ### Data-Driven Architecture
 
@@ -134,7 +134,7 @@ All 109+ LazyVim extras are auto-discovered:
 **Metadata (manually maintained):**
 - **`source/plugins.json`** — Core LazyVim plugins (27 plugins)
 - **`source/extras.json`** — All LazyVim extras metadata (109+ extras)
-- **`source/dependencies.json`** — Extra dependency mappings used by `installDependencies`
+- **`source/dependencies.json`** — Extra dependency mappings used by `enableDependencies`
 - **`source/version.txt`** — LazyVim version
 
 ### How It All Works (Fully Data-Driven!)
@@ -208,7 +208,7 @@ initLua with lazy.nvim config
 LazyVim running with Nix-managed plugins
 ```
 
-**Note:** Extras always add import paths. `installDependencies = true` additionally installs mapped tools from `source/dependencies.json`; unmapped tools still need manual `extraPackages`.
+**Note:** Extras always add import paths. `enableDependencies = true` additionally installs mapped tools from `source/dependencies.json`; unmapped tools still need manual `extraPackages`.
 
 ### Metadata Files
 
@@ -315,7 +315,7 @@ All LazyVim extras are automatically available! No need to create Nix modules.
 cat source/extras.json | jq '.lang | keys'
 ```
 
-`installDependencies = true` installs the mapped packages from `source/dependencies.json`
+`enableDependencies = true` installs the mapped packages from `source/dependencies.json`
 
 ## Nix Patterns Used
 

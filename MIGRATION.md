@@ -46,7 +46,7 @@ programs.lazyvim = {
 ### New Files
 
 - `nix/lib/data-loading.nix` - JSON data loading utilities
-- `source/dependencies.json` - Extra dependency mappings used by `installDependencies`
+- `source/dependencies.json` - Extra dependency mappings used by `enableDependencies`
 
 ### Architecture Changes
 
@@ -59,17 +59,17 @@ User enables extra → Nix module adds plugins/packages → LazyVim imports extr
 ```
 User enables extra → JSON lookup → LazyVim imports extra
                                  ↓
-                     Optional mapped tools auto-install via installDependencies
+                     Optional mapped tools auto-install via enableDependencies
 ```
 
 ### Dependency Installation
 
 ```nix
-programs.lazyvim.installDependencies = true;
+programs.lazyvim.enableDependencies = true;
 programs.lazyvim.extras.lang.python.enable = true;
 
 # Optional per-extra override
-programs.lazyvim.extras.lang.python.installDependencies = false;
+programs.lazyvim.extras.lang.python.enableDependencies = false;
 ```
 
 ### Benefits

@@ -137,14 +137,14 @@ in
       '';
     };
 
-    installDependencies = mkOption {
+    enableDependencies = mkOption {
       type = bool;
       default = false;
       description = ''
         Whether enabled extras should install their mapped system dependencies by default.
 
         This uses `source/dependencies.json` and includes any mapped runtime dependencies.
-        Individual extras can override this via `extras.<category>.<name>.installDependencies`.
+        Individual extras can override this via `extras.<category>.<name>.enableDependencies`.
       '';
     };
 
@@ -154,14 +154,14 @@ in
           options = {
             enable = mkEnableOption "this LazyVim extra";
 
-            installDependencies = mkOption {
+            enableDependencies = mkOption {
               type = bool;
-              default = cfg.installDependencies;
+              default = cfg.enableDependencies;
               description = ''
                 Whether to automatically install mapped system dependencies for this extra.
                 This uses `source/dependencies.json` and includes any mapped runtime dependencies.
                 Tools without a nixpkgs mapping are skipped; add those manually via `extraPackages`.
-                Defaults to `programs.lazyvim.installDependencies`.
+                Defaults to `programs.lazyvim.enableDependencies`.
               '';
             };
           };
@@ -173,7 +173,7 @@ in
           lang.rust.enable = true;
           lang.python = {
             enable = true;
-            installDependencies = false; # Override the top-level default for this extra
+            enableDependencies = false; # Override the top-level default for this extra
           };
           editor.dial.enable = true;
           ai.copilot.enable = true;

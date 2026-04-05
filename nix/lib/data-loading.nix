@@ -125,7 +125,7 @@ let
     left: right:
     {
       enable = true;
-      installDependencies = (left.installDependencies or false) || (right.installDependencies or false);
+      enableDependencies = (left.enableDependencies or false) || (right.enableDependencies or false);
     };
 
   mergeResolvedExtras =
@@ -269,7 +269,7 @@ rec {
                 extraKey = "${extra.category}.${extra.name}";
                 extraTools = extrasDependencies.extras.${extraKey} or [ ];
               in
-              if extra.config.installDependencies or false then
+              if extra.config.enableDependencies or false then
                 getPackagesForTools extraTools
               else
                 [ ]

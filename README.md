@@ -101,7 +101,7 @@ programs.lazyvim = {
   extraPlugins = [ ... ];           # Add plugins beyond LazyVim core
   excludePlugins = [ ... ];         # Drop core or metadata-provided plugins
 
-  installDependencies = true;       # Default dependency policy for enabled extras
+  enableDependencies = false;       # Default dependency policy for enabled extras
   extraPackages = [ ... ];          # Add system tools
 
   extras = {
@@ -113,7 +113,7 @@ programs.lazyvim = {
     editor.dial.enable = true;
     editor.telescope.enable = true;
     editor.neo-tree.enable = true;
-    lang.php.installDependencies = false;  # Per-extra override
+    lang.php.enableDependencies = false;   # Per-extra override
     # No need to write Nix modules - extras are data-driven!
   };
 };
@@ -158,7 +158,7 @@ Maintain the metadata in `source/` directly. In practice:
 
 - Update `source/extras.json` when syncing supported LazyVim extras.
 - Update `source/plugins.json` when the core plugin set changes.
-- Update `source/dependencies.json` when `installDependencies` mappings change.
+- Update `source/dependencies.json` when `enableDependencies` mappings change.
 - Update `source/version.txt` when you want to record the tracked LazyVim revision.
 
 ### Using extras
@@ -170,10 +170,11 @@ programs.lazyvim.extras.lang.python.enable = true;
 programs.lazyvim.extras.coding.nvim-cmp.enable = true; # Optional: switch away from the default blink backend
 ```
 
-Enabled extras install mapped dependencies by default. To opt one out:
+Enabled extras can install mapped dependencies when `enableDependencies` is on. To opt one out:
 
 ```nix
-programs.lazyvim.extras.lang.python.installDependencies = false;
+programs.lazyvim.enableDependencies = true;
+programs.lazyvim.extras.lang.python.enableDependencies = false;
 ```
 
 If you need additional tools beyond the mappings, add them to `extraPackages`:
@@ -208,7 +209,7 @@ nix4lazyvim/
 │   │   └── data-loading.nix    # JSON data loading utilities
 └── source/                     # Manually maintained metadata
     ├── extras.json             # All available LazyVim extras (300+)
-    ├── dependencies.json       # Extra dependency mappings for installDependencies
+    ├── dependencies.json       # Extra dependency mappings for enableDependencies
     └── version.txt             # LazyVim version
 ```
 
