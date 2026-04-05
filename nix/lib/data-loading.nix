@@ -37,7 +37,8 @@ let
     else
       throw "Unknown LazyVim extra: ${categoryName}.${extraName}\nUpdate source/extras.json to sync with latest LazyVim.";
 
-  resolveVimPlugin = pluginRef:
+  resolveVimPlugin =
+    pluginRef:
     let
       resolved = lib.attrByPath (lib.splitString "." pluginRef) null pkgs.vimPlugins;
     in
@@ -80,33 +81,30 @@ let
 
   uniquePluginEntries =
     entries:
-    (
-      lib.foldl'
-        (
-          acc: entry:
-          let
-            key = pluginEntryId entry;
-          in
-          if builtins.elem key acc.keys then
-            acc
-          else
-            {
-              keys = acc.keys ++ [ key ];
-              values = acc.values ++ [ entry ];
-            }
-        )
-        {
-          keys = [ ];
-          values = [ ];
-        }
-        entries
+    (lib.foldl'
+      (
+        acc: entry:
+        let
+          key = pluginEntryId entry;
+        in
+        if builtins.elem key acc.keys then
+          acc
+        else
+          {
+            keys = acc.keys ++ [ key ];
+            values = acc.values ++ [ entry ];
+          }
+      )
+      {
+        keys = [ ];
+        values = [ ];
+      }
+      entries
     ).values;
 
   getPluginEntriesForExtras =
     fieldName: extras:
-    uniquePluginEntries (
-      lib.flatten (map (extra: extra.${fieldName} or [ ]) extras)
-    );
+    uniquePluginEntries (lib.flatten (map (extra: extra.${fieldName} or [ ]) extras));
 
   parseExtraRef =
     ref:
@@ -121,34 +119,29 @@ let
     else
       throw "Invalid extra reference `${ref}` in source/extras.json. Expected `<category>.<name>`.";
 
-  mergeExtraConfig =
-    left: right:
-    {
-      enable = true;
-      enableDependencies = (left.enableDependencies or false) || (right.enableDependencies or false);
-    };
+  mergeExtraConfig = left: right: {
+    enable = true;
+    enableDependencies = (left.enableDependencies or false) || (right.enableDependencies or false);
+  };
 
   mergeResolvedExtras =
     extras:
     builtins.attrValues (
-      lib.foldl'
-        (
-          acc: extra:
-          let
-            key = "${extra.category}.${extra.name}";
-          in
-          if builtins.hasAttr key acc then
-            acc
-            // {
-              "${key}" = acc.${key} // {
-                config = mergeExtraConfig acc.${key}.config extra.config;
-              };
-            }
-          else
-            acc // { "${key}" = extra; }
-        )
-        { }
-        extras
+      lib.foldl' (
+        acc: extra:
+        let
+          key = "${extra.category}.${extra.name}";
+        in
+        if builtins.hasAttr key acc then
+          acc
+          // {
+            "${key}" = acc.${key} // {
+              config = mergeExtraConfig acc.${key}.config extra.config;
+            };
+          }
+        else
+          acc // { "${key}" = extra; }
+      ) { } extras
     );
 
   expandResolvedExtra =
@@ -156,51 +149,53 @@ let
     let
       key = "${extra.category}.${extra.name}";
       impliedRefs = extra.impliedExtras or [ ];
-      impliedExtras =
-        lib.flatten (
-          map
-            (
+      impliedExtras = lib.flatten (
+        map
+          (
+            ref:
+            let
+              parsed = parseExtraRef ref;
+              impliedExtra = (requireExtraMetadata parsed.category parsed.name) // {
+                inherit (extra) config;
+              };
+            in
+            expandResolvedExtra (seen ++ [ key ]) impliedExtra
+          )
+          (
+            lib.filter (
               ref:
-              let
-                parsed = parseExtraRef ref;
-                impliedExtra =
-                  (requireExtraMetadata parsed.category parsed.name)
-                  // {
-                    config = extra.config;
-                  };
-              in
-              expandResolvedExtra (seen ++ [ key ]) impliedExtra
-            )
-            (lib.filter (ref:
               let
                 parsed = parseExtraRef ref;
                 impliedKey = "${parsed.category}.${parsed.name}";
               in
               !(builtins.elem impliedKey (seen ++ [ key ]))
-            ) impliedRefs)
-        );
+            ) impliedRefs
+          )
+      );
     in
     [ extra ] ++ impliedExtras;
 in
 rec {
-  inherit extrasMetadata extrasDependencies pluginsData getExtraMetadata requireExtraMetadata;
+  inherit
+    extrasMetadata
+    extrasDependencies
+    pluginsData
+    getExtraMetadata
+    requireExtraMetadata
+    ;
 
   # Convert plugins data to actual vim plugin packages
   getCorePlugins = builtins.map convertPluginEntry pluginsData.core;
 
   # Resolve a dotted nixpkgs attribute path like "python3Packages.ruff"
-  resolvePackage = pkgName:
+  resolvePackage =
+    pkgName:
     let
       resolved = lib.attrByPath (lib.splitString "." pkgName) null pkgs;
     in
     if resolved != null && lib.isDerivation resolved then resolved else null;
 
-  getPackagesForPaths = paths:
-    lib.unique (
-      lib.filter
-        (pkg: pkg != null)
-        (map resolvePackage paths)
-    );
+  getPackagesForPaths = paths: lib.unique (lib.filter (pkg: pkg != null) (map resolvePackage paths));
 
   getPackagesForDependencySpec =
     spec:
@@ -214,29 +209,30 @@ rec {
   # Helper to get all available extras as a list
   getAllExtras =
     let
-      processCategory = categoryName: categoryExtras: lib.mapAttrsToList (_: extraData: extraData) categoryExtras;
+      processCategory =
+        categoryName: categoryExtras: lib.mapAttrsToList (_: extraData: extraData) categoryExtras;
       allCategories = lib.mapAttrsToList processCategory extrasMetadata;
     in
     lib.flatten allCategories;
 
   # Helper to get enabled extras from config
-  getEnabledExtras = extrasConfig:
+  getEnabledExtras =
+    extrasConfig:
     let
       explicitExtras =
         let
-          processCategory = categoryName: categoryExtras:
+          processCategory =
+            categoryName: categoryExtras:
             let
               enabledInCategory = lib.filterAttrs (_: extraConfig: extraConfig.enable or false) categoryExtras;
             in
-            lib.mapAttrsToList
-              (
-                extraName: extraConfig:
-                (requireExtraMetadata categoryName extraName)
-                // {
-                  config = extraConfig;
-                }
-              )
-              enabledInCategory;
+            lib.mapAttrsToList (
+              extraName: extraConfig:
+              (requireExtraMetadata categoryName extraName)
+              // {
+                config = extraConfig;
+              }
+            ) enabledInCategory;
 
           allCategories = lib.mapAttrsToList processCategory extrasConfig;
         in
@@ -254,24 +250,23 @@ rec {
 
   # Resolve package paths from source/dependencies.json for enabled extras that opt in.
   # Missing nixpkgs paths are skipped.
-  getExtraDependencyPackages = enabledExtras:
+  getExtraDependencyPackages =
+    enabledExtras:
     lib.unique (
-      lib.filter
-        (pkg: pkg != null)
-        (lib.flatten (
-          map
-            (
-              extra:
-              let
-                extraKey = "${extra.category}.${extra.name}";
-                extraDependencySpec = extrasDependencies.extras.${extraKey} or [ ];
-              in
-              if extra.config.enableDependencies or false then
-                getPackagesForDependencySpec extraDependencySpec
-              else
-                [ ]
-            )
-            enabledExtras
-        ))
+      lib.filter (pkg: pkg != null) (
+        lib.flatten (
+          map (
+            extra:
+            let
+              extraKey = "${extra.category}.${extra.name}";
+              extraDependencySpec = extrasDependencies.extras.${extraKey} or [ ];
+            in
+            if extra.config.enableDependencies or false then
+              getPackagesForDependencySpec extraDependencySpec
+            else
+              [ ]
+          ) enabledExtras
+        )
+      )
     );
 }
