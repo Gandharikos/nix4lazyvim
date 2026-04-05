@@ -402,8 +402,6 @@ in
         viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;
-
-        plugins = with pkgs.vimPlugins; [ lazy-nvim ];
       };
     }
   );
