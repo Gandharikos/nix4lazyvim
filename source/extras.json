@@ -35,7 +35,7 @@
       "extraPlugins": [
         "copilot-lua",
         "copilot-cmp",
-        "blink-cmp-copilot"
+        "blink-copilot"
       ]
     },
     "sidekick": {
